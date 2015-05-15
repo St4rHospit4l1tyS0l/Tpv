@@ -1,26 +1,36 @@
 ﻿<Window x:Class="Tpv.Ui.View.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="TPV" Height="400" Width="600" ResizeMode="NoResize" Topmost="True" Name="MainWnd"
-        WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow" Loaded="MainWindow_OnLoaded">
+        Title="TPV" Height="420" Width="600" ResizeMode="NoResize" Topmost="True" Name="MainWnd"
+        WindowStartupLocation="CenterScreen" WindowStyle="None" Loaded="MainWindow_OnLoaded">
     <Grid Background="#FF254066">
         <Grid.RowDefinitions>
             <RowDefinition Height="9*"/>
             <RowDefinition Height="41*"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" VerticalAlignment="Center">
-            <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Content="Terminal Punto de Venta" Foreground="White" HorizontalAlignment="Center" FontFamily="Calibri Light" FontSize="30"></Label>
+        <StackPanel Grid.Row="0" VerticalAlignment="Center" Orientation="Horizontal">
+            <Image Source="/Tpv.Ui;component/Images/technology21.png" Width="40" Height="40" Margin="100 0 0 0"></Image>
+            <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Content="Terminal Punto de Venta" Margin="10 0 0 0" Foreground="White" HorizontalAlignment="Center" FontFamily="Calibri Light" FontSize="30"></Label>
+            <StackPanel Margin="110 0 0 0">
+                <Label Foreground="White" FontSize="16" Content="X" MouseDown="Close"/>
+            </StackPanel>
         </StackPanel>
         <StackPanel Grid.Row="1">
             <Rectangle Height="2" StrokeThickness="2" Fill="White"></Rectangle>
             <StackPanel Orientation="Vertical" Margin="0 10 0 0" HorizontalAlignment="Center">
                 <TextBlock Text="Ingrese el código de barras:" FontSize="16" Foreground="White" TextAlignment="Center"></TextBlock>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBox Width="339.161" Name="TxtBarCode" Margin="0 5 0 0" Height="33" FontSize="14" HorizontalContentAlignment="Center"
+                    <TextBox Width="339.161" Name="TxtBarCode" Margin="10 5 0 0" Height="36" FontSize="14" HorizontalContentAlignment="Center"
                              VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center"/>
                     <Button VerticalContentAlignment="Center" VerticalAlignment="Center" 
-                            Margin="5 0 0 0" Width="80" Height="33" Name="SearchBtn" Background="#FF006887" BorderThickness="0" Click="SearchBtn_Click" Foreground="White" FontSize="16">
-                        Buscar
+                            Margin="5 0 0 0" Width="109.37" Height="38" Name="SearchBtn" Background="#FF006887" BorderThickness="0" 
+                            Click="SearchBtn_Click" Foreground="White" FontSize="16">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" >
+                                <Image Source="/Tpv.Ui;component/Images/magnifying.png" Width="20" Height="20" ></Image>
+                                <Label Foreground="White" Margin="5 0 0 0">Buscar</Label>
+                            </StackPanel>
+                        </Button.Content>
                     </Button>
                 </StackPanel>
                 <StackPanel Name="ProgressStPan" Margin="0 10 0 0" Visibility="Collapsed">
@@ -34,7 +44,7 @@
                     <TextBlock Name="SuccessTxt" Foreground="#FF5DFF00" FontSize="16" TextAlignment="Center">
                     </TextBlock>
                 </StackPanel>
-                <StackPanel Name="PromoStPan"  Margin="0 35 0 0" Height="115" Visibility="Collapsed" Background="#FF25A019" VerticalAlignment="Center">
+                <StackPanel Name="PromoStPan" Margin="0 35 0 0" Height="115" Visibility="Collapsed" Background="#FF25A019" VerticalAlignment="Center">
                     <TextBlock Name="TitlePromoTxt" Foreground="White" FontSize="20" HorizontalAlignment="Center" Margin="0 5 0 0"
                                VerticalAlignment="Center" Height="24.672" FontFamily="Calibri Light" TextAlignment="Center">
                     </TextBlock>
@@ -43,9 +53,17 @@
                     </TextBlock>
                     <Button VerticalContentAlignment="Center" VerticalAlignment="Center" 
                             Margin="5 0 0 0" Width="176.678" Height="36" Name="ApplyBtn" Background="#FFE47201" 
-                            BorderThickness="0" Click="SearchBtn_Click" Foreground="White" FontSize="16">
-                        Aplicar promoción
+                            BorderThickness="0" Click="ApplyBtn_Click" Foreground="White" FontSize="16">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" >
+                                <Image Source="/Tpv.Ui;component/Images/computer13.png" Width="20" Height="20" ></Image>
+                                <Label Foreground="White" Margin="0 0 0 0">Aplicar promoción</Label>
+                            </StackPanel>
+                        </Button.Content>
                     </Button>
+                </StackPanel>
+                <StackPanel Name="ApplyStPan" Visibility="Collapsed" Margin="0 5 0 0">
+                    <ProgressBar IsIndeterminate="True" Height="25" />
                 </StackPanel>
             </StackPanel>
         </StackPanel>
