@@ -173,6 +173,7 @@ namespace Tpv.Ui.View
                         var msg = String.Format("La eliminación del código de barras '{0}' se realizó de forma exitosa. Estatus: {1}", _lastBarCode, resp.Status);
 
                         Log.Info(msg);
+                        Log.Info(" ******" + resp.Status + "******");
                         MainWnd.Dispatcher.Invoke(new Action(() => MessageBox.Show(msg, "TPV", MessageBoxButton.OK, MessageBoxImage.Information)));
 
                         ClearAll();
