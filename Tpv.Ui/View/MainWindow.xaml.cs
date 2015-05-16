@@ -221,5 +221,20 @@ namespace Tpv.Ui.View
         {
             Close();
         }
+
+        private void Minimize(object sender, MouseButtonEventArgs e)
+        {
+            MainWnd.Width = 13;
+            MainWnd.Height = 20;
+            LblMax.Visibility = Visibility.Visible;
+        }
+
+        private void Maximize(object sender, MouseButtonEventArgs e)
+        {
+
+            MainWnd.Width = 600;
+            MainWnd.Height = 420;
+            LblMax.Visibility = Visibility.Hidden;
+        }
     }
 }

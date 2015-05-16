@@ -3,15 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="TPV" Height="420" Width="600" ResizeMode="NoResize" Topmost="True" Name="MainWnd"
         WindowStartupLocation="CenterScreen" WindowStyle="None" Loaded="MainWindow_OnLoaded">
-    <Grid Background="#FF254066">
+    <Grid Background="#FF254066" Height="420" Width="600" >
         <Grid.RowDefinitions>
             <RowDefinition Height="9*"/>
             <RowDefinition Height="41*"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" VerticalAlignment="Center" Orientation="Horizontal">
-            <Image Source="/Tpv.Ui;component/Images/technology21.png" Width="40" Height="40" Margin="100 0 0 0"></Image>
-            <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Content="Terminal Punto de Venta" Margin="10 0 0 0" Foreground="White" HorizontalAlignment="Center" FontFamily="Calibri Light" FontSize="30"></Label>
-            <StackPanel Margin="110 0 0 0">
+        <StackPanel Grid.Row="0" VerticalAlignment="Center" Width="600" Orientation="Horizontal">
+            <Label Foreground="White" FontSize="18" Visibility="Hidden" Content="^" Name="LblMax" MouseDown="Maximize" Padding="0 0 0 50"/>
+            <Image Source="/Tpv.Ui;component/Images/technology21.png" Width="40" Height="40" Margin="90 0 0 0"></Image>
+            <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Content="Terminal Punto de Venta" Margin="10 0 0 0" Foreground="White" HorizontalAlignment="Center" FontSize="28"></Label>
+            <StackPanel Margin="95 0 0 0" Orientation="Horizontal">
+                <Label Foreground="White" FontSize="18" Content="-" Name="LblMin"  MouseDown="Minimize"/>
                 <Label Foreground="White" FontSize="16" Content="X" MouseDown="Close"/>
             </StackPanel>
         </StackPanel>
@@ -22,7 +24,7 @@
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBox Width="339.161" Name="TxtBarCode" Margin="10 5 0 0" Height="36" FontSize="14" HorizontalContentAlignment="Center"
                              VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center"/>
-                    <Button VerticalContentAlignment="Center" VerticalAlignment="Center" 
+                    <Button VerticalContentAlignment="Center" VerticalAlignment="Center"
                             Margin="5 0 0 0" Width="109.37" Height="38" Name="SearchBtn" Background="#FF006887" BorderThickness="0" 
                             Click="SearchBtn_Click" Foreground="White" FontSize="16">
                         <Button.Content>
@@ -46,7 +48,7 @@
                 </StackPanel>
                 <StackPanel Name="PromoStPan" Margin="0 35 0 0" Height="115" Visibility="Collapsed" Background="#FF25A019" VerticalAlignment="Center">
                     <TextBlock Name="TitlePromoTxt" Foreground="White" FontSize="20" HorizontalAlignment="Center" Margin="0 5 0 0"
-                               VerticalAlignment="Center" Height="24.672" FontFamily="Calibri Light" TextAlignment="Center">
+                               VerticalAlignment="Center" Height="24.672" TextAlignment="Center">
                     </TextBlock>
                     <TextBlock Name="PromoTxt" Foreground="White" FontSize="18" HorizontalAlignment="Center" Margin="0 5 0 10"
                                VerticalAlignment="Center" Height="24.672" TextAlignment="Center" FontWeight="Bold">
