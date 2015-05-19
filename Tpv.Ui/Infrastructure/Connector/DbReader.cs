@@ -12,7 +12,7 @@ namespace Tpv.Ui.Infrastructure.Connector
             var dic = new Dictionary<int, string>();
 
             if (!File.Exists(file)){
-                response.Message = "El archivo con las promociones no existe";
+                response.Message = String.Format("El archivo '{0}' con las promociones no existe", file);
                 response.IsSuccess = false;
                 return null;
             }
@@ -28,7 +28,7 @@ namespace Tpv.Ui.Infrastructure.Connector
 
                 if (keyVal.Length != 2)
                 {
-                    response.Message = "El archivo no tiene el formato correcto, debe ser llave=valor";
+                    response.Message = String.Format("El archivo '{0}' no tiene el formato correcto, debe ser llave=valor", file);
                     response.IsSuccess = false;
                     return null;
                 }

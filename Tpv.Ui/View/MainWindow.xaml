@@ -10,7 +10,7 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" VerticalAlignment="Center" Width="600" Orientation="Horizontal">
             <Label Foreground="White" FontSize="18" Visibility="Hidden" Content="^" Name="LblMax" MouseDown="Maximize" Padding="0 0 0 50"/>
-            <Image Source="/Tpv.Ui;component/Images/technology21.png" Width="40" Height="40" Margin="90 0 0 0"></Image>
+            <Image Source="/Tpv;component/Images/technology21.png" Width="40" Height="40" Margin="90 0 0 0"></Image>
             <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Content="Terminal Punto de Venta" Margin="10 0 0 0" Foreground="White" HorizontalAlignment="Center" FontSize="28"></Label>
             <StackPanel Margin="95 0 0 0" Orientation="Horizontal">
                 <Label Foreground="White" FontSize="18" Content="-" Name="LblMin"  MouseDown="Minimize"/>
@@ -29,7 +29,7 @@
                             Click="SearchBtn_Click" Foreground="White" FontSize="16">
                         <Button.Content>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" >
-                                <Image Source="/Tpv.Ui;component/Images/magnifying.png" Width="20" Height="20" ></Image>
+                                <Image Source="/Tpv;component/Images/magnifying.png" Width="20" Height="20" ></Image>
                                 <Label Foreground="White" Margin="5 0 0 0">Buscar</Label>
                             </StackPanel>
                         </Button.Content>
@@ -58,7 +58,7 @@
                             BorderThickness="0" Click="ApplyBtn_Click" Foreground="White" FontSize="16">
                         <Button.Content>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" >
-                                <Image Source="/Tpv.Ui;component/Images/computer13.png" Width="20" Height="20" ></Image>
+                                <Image Source="/Tpv;component/Images/computer13.png" Width="20" Height="20" ></Image>
                                 <Label Foreground="White" Margin="0 0 0 0">Aplicar promoción</Label>
                             </StackPanel>
                         </Button.Content>
