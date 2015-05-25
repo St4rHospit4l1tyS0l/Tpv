@@ -112,6 +112,10 @@
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup>
+    <Reference Include="LasaFOHLib67">
+      <HintPath>..\lib\LasaFOHLib67.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.3\lib\net35-full\log4net.dll</HintPath>
     </Reference>
@@ -147,6 +151,7 @@
     <Compile Include="Model\ResponseValidationModel.cs" />
     <Compile Include="Model\SharedConstants.cs" />
     <Compile Include="Repository\Database.cs" />
+    <Compile Include="Service\PosService.cs" />
     <Compile Include="Service\RestService.cs" />
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

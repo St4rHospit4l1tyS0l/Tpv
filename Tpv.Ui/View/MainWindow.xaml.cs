@@ -18,9 +18,11 @@ namespace Tpv.Ui.View
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(MainWindow));
         private string _lastBarCode;
+        private PosService _posService;
 
         public MainWindow()
         {
+            _posService = new PosService();
             InitializeComponent();
         }
 
@@ -120,13 +122,23 @@ namespace Tpv.Ui.View
                 {
                     if (resp.Status.Contains(ConfigurationManager.AppSettings["ValidationOkString"]))
                     {
-                        SuccessStPan.Visibility = Visibility.Visible;
-                        SuccessTxt.Text = resp.Status;
-                        PromoStPan.Visibility = Visibility.Visible;
-                        PromoTxt.Text = Database.DicPromotions[iCode];
-                        TitlePromoTxt.Text = String.Format("Promoción aplicable al código {0}:", barCode);
-                        Log.Info(String.Format("Promoción aplicable para el código de barras: {0}. | Respuesta: {1}", barCode, resp.Status));
-                        SearchBtn.IsEnabled = false;
+                        if (_posService.ApplyPromotion(iCode))
+                        {
+                            SuccessStPan.Visibility = Visibility.Visible;
+                            SuccessTxt.Text = resp.Status;
+                            PromoStPan.Visibility = Visibility.Visible;
+                            PromoTxt.Text = Database.DicPromotions[iCode];
+                            TitlePromoTxt.Text = String.Format("Promoción aplicable al código {0}:", barCode);
+                            Log.Info(String.Format(
+                                "Promoción aplicable para el código de barras: {0}. | Respuesta: {1}", barCode,
+                                resp.Status));
+                            SearchBtn.IsEnabled = false;
+                        }
+                        else
+                        {
+                            //TODO
+                        }
+
                     }
                     else
                     {
@@ -237,4 +249,5 @@ namespace Tpv.Ui.View
             LblMax.Visibility = Visibility.Hidden;
         }
     }
+
 }
