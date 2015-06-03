@@ -1,0 +1,563 @@
+﻿<Window x:Class="Tpv.Ui.View.PromoModWnd"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Height="728" Width="1024" WindowStyle="None" 
+        ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Topmost="True" Loaded="Window_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="16*"/>
+            <RowDefinition Height="311*"/>
+            <RowDefinition Height="37*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="70*"/>
+                <ColumnDefinition Width="45*"/>
+                <ColumnDefinition Width="141*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel HorizontalAlignment="Stretch"  Orientation="Vertical" VerticalAlignment="Stretch" Grid.Column="0">
+                <StackPanel Height="30" Orientation="Horizontal" FlowDirection="RightToLeft">
+                    <StackPanel.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <LinearGradientBrush.RelativeTransform>
+                                <TransformGroup>
+                                    <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                    <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                                    <RotateTransform Angle="90" CenterY="0.5" CenterX="0.5"/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </LinearGradientBrush.RelativeTransform>
+                            <GradientStop Color="#FF38C4F3"/>
+                            <GradientStop Color="#FF24738E" Offset="1"/>
+                        </LinearGradientBrush>
+                    </StackPanel.Background>
+                    <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="280" Text="New Order/Check 1" FontFamily="MS PMincho" FontSize="18" />
+                </StackPanel>
+                <StackPanel Height="536" Background="#FF33CCFF">
+
+                </StackPanel>
+                <StackPanel Height="57" Orientation="Horizontal" HorizontalAlignment="Right" Width="280">
+                    <Button Width="114" Name="BtnModify" Margin="0,0" BorderBrush="{x:Null}">
+                        <Button.Background>
+                            <ImageBrush>
+                                <ImageBrush.ImageSource>
+                                    <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                </ImageBrush.ImageSource>
+                            </ImageBrush>
+                        </Button.Background>
+                        <Button.Content>
+                            <TextBlock FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18">
+                                Modify
+                            </TextBlock>
+                        </Button.Content>
+                    </Button>
+                    <Button Width="114" Name="BtnDelete" Margin="0,0" BorderBrush="{x:Null}">
+                        <Button.Background>
+                            <ImageBrush>
+                                <ImageBrush.ImageSource>
+                                    <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                </ImageBrush.ImageSource>
+                            </ImageBrush>
+                        </Button.Background>
+                        <Button.Content>
+                            <TextBlock FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18">
+                                Delete
+                            </TextBlock>
+                        </Button.Content>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Name="StGroupMod" Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Column="1" VerticalAlignment="Stretch">
+                <!--<Button Name="BtnModificador" BorderBrush="{x:Null}" Foreground="White" Height="50" Width="170">
+                    <Button.Background>
+                        <ImageBrush>
+                            <ImageBrush.ImageSource>
+                                <BitmapImage UriSource="/Tpv;component/Images/ButtonGrpMod.jpg"/>
+                            </ImageBrush.ImageSource>
+                        </ImageBrush>
+                    </Button.Background>
+                    <Button.Content>
+                        <TextBlock FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18">
+                        APP DUNKIN
+                        </TextBlock>
+                    </Button.Content>
+                </Button>-->
+            </StackPanel>
+
+            <Border Grid.Column="2" BorderThickness="1" BorderBrush="#FF515151" Margin="0,0,5,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="33*"/>
+                        <RowDefinition Height="55*"/>
+                        <RowDefinition Height="462*"/>
+                        <RowDefinition Height="70*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Center" Margin="245.5,0" Width="66">
+                        <TextBlock TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="16"> Choose 1</TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="6,2.5" Height="50" Width="545">
+                        <Button Name="BtnModNo" BorderBrush="{x:Null}" Height="50" Width="60" >
+                            <Button.Background>
+                                <ImageBrush>
+                                    <ImageBrush.ImageSource>
+                                        <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                    </ImageBrush.ImageSource>
+                                </ImageBrush>
+                            </Button.Background>
+                            <Button.Content>
+                                <TextBlock FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18">No</TextBlock>
+                            </Button.Content>
+                        </Button>
+                        <Button Name="BtnModExtra" BorderBrush="{x:Null}" Height="50" Width="60" >
+                            <Button.Background>
+                                <ImageBrush>
+                                    <ImageBrush.ImageSource>
+                                        <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                    </ImageBrush.ImageSource>
+                                </ImageBrush>
+                            </Button.Background>
+                            <Button.Content>
+                                <TextBlock FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18">Extra</TextBlock>
+                            </Button.Content>
+                        </Button>
+                        <Button Name="BtnModSide" BorderBrush="{x:Null}" Height="50" Width="60" >
+                            <Button.Background>
+                                <ImageBrush>
+                                    <ImageBrush.ImageSource>
+                                        <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                    </ImageBrush.ImageSource>
+                                </ImageBrush>
+                            </Button.Background>
+                            <Button.Content>
+                                <TextBlock FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18">Side</TextBlock>
+                            </Button.Content>
+                        </Button>
+                        <Button Name="BtnModLight" BorderBrush="{x:Null}" Height="50" Width="60" >
+                            <Button.Background>
+                                <ImageBrush>
+                                    <ImageBrush.ImageSource>
+                                        <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                    </ImageBrush.ImageSource>
+                                </ImageBrush>
+                            </Button.Background>
+                            <Button.Content>
+                                <TextBlock FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18">Light</TextBlock>
+                            </Button.Content>
+                        </Button>
+                        <Button Name="BtnModHeavy" BorderBrush="{x:Null}" Height="50" Width="60" >
+                            <Button.Background>
+                                <ImageBrush>
+                                    <ImageBrush.ImageSource>
+                                        <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                    </ImageBrush.ImageSource>
+                                </ImageBrush>
+                            </Button.Background>
+                            <Button.Content>
+                                <TextBlock FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18">Heavy</TextBlock>
+                            </Button.Content>
+                        </Button>
+                        <Button Name="BtnModOnly" BorderBrush="{x:Null}" Height="50" Width="60" >
+                            <Button.Background>
+                                <ImageBrush>
+                                    <ImageBrush.ImageSource>
+                                        <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                    </ImageBrush.ImageSource>
+                                </ImageBrush>
+                            </Button.Background>
+                            <Button.Content>
+                                <TextBlock FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18">Only</TextBlock>
+                            </Button.Content>
+                        </Button>
+                        <Button Name="BtnModHalf" BorderBrush="{x:Null}" Height="50" Width="60" >
+                            <Button.Background>
+                                <ImageBrush>
+                                    <ImageBrush.ImageSource>
+                                        <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                    </ImageBrush.ImageSource>
+                                </ImageBrush>
+                            </Button.Background>
+                            <Button.Content>
+                                <TextBlock FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18">Half</TextBlock>
+                            </Button.Content>
+                        </Button>
+                        <Button Name="BtnModQuarter" BorderBrush="{x:Null}" Height="50" Width="65" >
+                            <Button.Background>
+                                <ImageBrush>
+                                    <ImageBrush.ImageSource>
+                                        <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                    </ImageBrush.ImageSource>
+                                </ImageBrush>
+                            </Button.Background>
+                            <Button.Content>
+                                <TextBlock FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18">Quarter</TextBlock>
+                            </Button.Content>
+                        </Button>
+                        <Button Name="BtnModAdd" BorderBrush="{x:Null}" Height="50" Width="60" >
+                            <Button.Background>
+                                <ImageBrush>
+                                    <ImageBrush.ImageSource>
+                                        <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                    </ImageBrush.ImageSource>
+                                </ImageBrush>
+                            </Button.Background>
+                            <Button.Content>
+                                <TextBlock FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18">Add</TextBlock>
+                            </Button.Content>
+                        </Button>
+                    </StackPanel>
+                    <StackPanel Grid.Row="2">
+                        <WrapPanel Name="WrModifier" Margin="20 25 20 0" Height="410">
+                            <!--<Button Name="BtnMod1" BorderBrush="{x:Null}" Height="68" Width="170" Margin="1" >
+                                <Button.Background>
+                                    <ImageBrush>
+                                        <ImageBrush.ImageSource>
+                                            <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
+                                </Button.Background>
+                                <Button.Content>
+                                    <Grid>
+                                        <TextBlock TextWrapping="Wrap" TextAlignment="Center" 
+                                                   FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18" Foreground="#FF0C3AD6" Margin="0,4,0,-4">DUNK MA DRE CAJA AZUL</TextBlock>
+                                        <TextBlock Margin="127,32,4,-2"  Foreground="#FF0C3AD6">0.20</TextBlock>
+                                    </Grid>
+                                </Button.Content>
+                            </Button>
+                            <Button Name="BtnMod2" BorderBrush="{x:Null}" Height="68" Width="170" Margin="1" >
+                                <Button.Background>
+                                    <ImageBrush>
+                                        <ImageBrush.ImageSource>
+                                            <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
+                                </Button.Background>
+                                <Button.Content>
+                                    <Grid>
+                                        <TextBlock TextWrapping="Wrap" TextAlignment="Center" 
+                                                   FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18" Foreground="#FF0C3AD6">DUNK MA DRE CAJA AZUL</TextBlock>
+                                    </Grid>
+                                </Button.Content>
+                            </Button>
+                            <Button Name="BtnMod3" BorderBrush="{x:Null}" Height="68" Width="170" Margin="1" >
+                                <Button.Background>
+                                    <ImageBrush>
+                                        <ImageBrush.ImageSource>
+                                            <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
+                                </Button.Background>
+                                <Button.Content>
+                                    <Grid>
+                                        <TextBlock TextWrapping="Wrap" TextAlignment="Center" 
+                                                   FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18" Foreground="#FF0C3AD6">DUNK MA DRE CAJA AZUL</TextBlock>
+                                    </Grid>
+                                </Button.Content>
+                            </Button>
+                            <Button Name="BtnMod4" BorderBrush="{x:Null}" Height="68" Width="170" Margin="1" >
+                                <Button.Background>
+                                    <ImageBrush>
+                                        <ImageBrush.ImageSource>
+                                            <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
+                                </Button.Background>
+                                <Button.Content>
+                                    <Grid>
+                                        <TextBlock TextWrapping="Wrap" TextAlignment="Center" 
+                                                   FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18" Foreground="#FF0C3AD6">DUNK MA DRE CAJA AZUL</TextBlock>
+                                    </Grid>
+                                </Button.Content>
+                            </Button>
+                            <Button Name="BtnMod5" BorderBrush="{x:Null}" Height="68" Width="170" Margin="1" >
+                                <Button.Background>
+                                    <ImageBrush>
+                                        <ImageBrush.ImageSource>
+                                            <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
+                                </Button.Background>
+                                <Button.Content>
+                                    <Grid>
+                                        <TextBlock TextWrapping="Wrap" TextAlignment="Center" 
+                                                   FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18" Foreground="#FF0C3AD6">DUNK MA DRE CAJA AZUL</TextBlock>
+                                    </Grid>
+                                </Button.Content>
+                            </Button>
+                            <Button Name="BtnMod6" BorderBrush="{x:Null}" Height="68" Width="170" Margin="1" >
+                                <Button.Background>
+                                    <ImageBrush>
+                                        <ImageBrush.ImageSource>
+                                            <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
+                                </Button.Background>
+                                <Button.Content>
+                                    <Grid>
+                                        <TextBlock TextWrapping="Wrap" TextAlignment="Center" 
+                                                   FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18" Foreground="#FF0C3AD6">DUNK MA DRE CAJA AZUL</TextBlock>
+                                    </Grid>
+                                </Button.Content>
+                            </Button>
+                            <Button Name="BtnMod7" BorderBrush="{x:Null}" Height="68" Width="170" Margin="1" >
+                                <Button.Background>
+                                    <ImageBrush>
+                                        <ImageBrush.ImageSource>
+                                            <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
+                                </Button.Background>
+                                <Button.Content>
+                                    <Grid>
+                                        <TextBlock TextWrapping="Wrap" TextAlignment="Center" 
+                                                   FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18" Foreground="#FF0C3AD6">DUNK MA DRE CAJA AZUL</TextBlock>
+                                    </Grid>
+                                </Button.Content>
+                            </Button>
+                            <Button Name="BtnMod14" BorderBrush="{x:Null}" Height="68" Width="170" Margin="1" >
+                                <Button.Background>
+                                    <ImageBrush>
+                                        <ImageBrush.ImageSource>
+                                            <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
+                                </Button.Background>
+                                <Button.Content>
+                                    <Grid>
+                                        <TextBlock TextWrapping="Wrap" TextAlignment="Center" 
+                                                   FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18" Foreground="#FF0C3AD6">DUNK MA DRE CAJA AZUL</TextBlock>
+                                    </Grid>
+                                </Button.Content>
+                            </Button>
+                            <Button Name="BtnMod15" BorderBrush="{x:Null}" Height="68" Width="170" Margin="1" >
+                                <Button.Background>
+                                    <ImageBrush>
+                                        <ImageBrush.ImageSource>
+                                            <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
+                                </Button.Background>
+                                <Button.Content>
+                                    <Grid>
+                                        <TextBlock TextWrapping="Wrap" TextAlignment="Center" 
+                                                   FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18" Foreground="#FF0C3AD6">DUNK MA DRE CAJA AZUL</TextBlock>
+                                    </Grid>
+                                </Button.Content>
+                            </Button>
+                            <Button Name="BtnMod8" BorderBrush="{x:Null}" Height="68" Width="170" Margin="1" >
+                                <Button.Background>
+                                    <ImageBrush>
+                                        <ImageBrush.ImageSource>
+                                            <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
+                                </Button.Background>
+                                <Button.Content>
+                                    <Grid>
+                                        <TextBlock TextWrapping="Wrap" TextAlignment="Center" 
+                                                   FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18" Foreground="#FF0C3AD6">DUNK MA DRE CAJA AZUL</TextBlock>
+                                    </Grid>
+                                </Button.Content>
+                            </Button>
+                            <Button Name="BtnMod9" BorderBrush="{x:Null}" Height="68" Width="170" Margin="1" >
+                                <Button.Background>
+                                    <ImageBrush>
+                                        <ImageBrush.ImageSource>
+                                            <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
+                                </Button.Background>
+                                <Button.Content>
+                                    <Grid>
+                                        <TextBlock TextWrapping="Wrap" TextAlignment="Center" 
+                                                   FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18" Foreground="#FF0C3AD6">DUNK MA DRE CAJA AZUL</TextBlock>
+                                    </Grid>
+                                </Button.Content>
+                            </Button>
+                            <Button Name="BtnMod10" BorderBrush="{x:Null}" Height="68" Width="170" Margin="1" >
+                                <Button.Background>
+                                    <ImageBrush>
+                                        <ImageBrush.ImageSource>
+                                            <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
+                                </Button.Background>
+                                <Button.Content>
+                                    <Grid>
+                                        <TextBlock TextWrapping="Wrap" TextAlignment="Center" 
+                                                   FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18" Foreground="#FF0C3AD6">DUNK MA DRE CAJA AZUL</TextBlock>
+                                    </Grid>
+                                </Button.Content>
+                            </Button>
+                            <Button Name="BtnMod11" BorderBrush="{x:Null}" Height="68" Width="170" Margin="1" >
+                                <Button.Background>
+                                    <ImageBrush>
+                                        <ImageBrush.ImageSource>
+                                            <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
+                                </Button.Background>
+                                <Button.Content>
+                                    <Grid>
+                                        <TextBlock TextWrapping="Wrap" TextAlignment="Center" 
+                                                   FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18" Foreground="#FF0C3AD6">DUNK MA DRE CAJA AZUL</TextBlock>
+                                    </Grid>
+                                </Button.Content>
+                            </Button>
+                            <Button Name="BtnMod12" BorderBrush="{x:Null}" Height="68" Width="170" Margin="1" >
+                                <Button.Background>
+                                    <ImageBrush>
+                                        <ImageBrush.ImageSource>
+                                            <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
+                                </Button.Background>
+                                <Button.Content>
+                                    <Grid>
+                                        <TextBlock TextWrapping="Wrap" TextAlignment="Center" 
+                                                   FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18" Foreground="#FF0C3AD6">DUNK MA DRE CAJA AZUL</TextBlock>
+                                    </Grid>
+                                </Button.Content>
+                            </Button>
+                            <Button Name="BtnMod13" BorderBrush="{x:Null}" Height="68" Width="170" Margin="1" >
+                                <Button.Background>
+                                    <ImageBrush>
+                                        <ImageBrush.ImageSource>
+                                            <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
+                                </Button.Background>
+                                <Button.Content>
+                                    <Grid>
+                                        <TextBlock TextWrapping="Wrap" TextAlignment="Center" 
+                                                   FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18" Foreground="#FF0C3AD6">DUNK MA DRE CAJA AZUL</TextBlock>
+                                    </Grid>
+                                </Button.Content>
+                            </Button>
+                            <Button Name="BtnMod23" BorderBrush="{x:Null}" Height="68" Width="170" Margin="1" >
+                                <Button.Background>
+                                    <ImageBrush>
+                                        <ImageBrush.ImageSource>
+                                            <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
+                                </Button.Background>
+                                <Button.Content>
+                                    <Grid>
+                                        <TextBlock TextWrapping="Wrap" TextAlignment="Center" 
+                                                   FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18" Foreground="#FF0C3AD6">DUNK MA DRE CAJA AZUL</TextBlock>
+                                    </Grid>
+                                </Button.Content>
+                            </Button>
+                            <Button Name="BtnMod24" BorderBrush="{x:Null}" Height="68" Width="170" Margin="1" >
+                                <Button.Background>
+                                    <ImageBrush>
+                                        <ImageBrush.ImageSource>
+                                            <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
+                                </Button.Background>
+                                <Button.Content>
+                                    <Grid>
+                                        <TextBlock TextWrapping="Wrap" TextAlignment="Center" 
+                                                   FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18" Foreground="#FF0C3AD6">DUNK MA DRE CAJA AZUL</TextBlock>
+                                    </Grid>
+                                </Button.Content>
+                            </Button>
+                            <Button Name="BtnMod25" BorderBrush="{x:Null}" Height="68" Width="170" Margin="1" >
+                                <Button.Background>
+                                    <ImageBrush>
+                                        <ImageBrush.ImageSource>
+                                            <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
+                                </Button.Background>
+                                <Button.Content>
+                                    <Grid>
+                                        <TextBlock TextWrapping="Wrap" TextAlignment="Center" 
+                                                   FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18" Foreground="#FF0C3AD6">DUNK MA DRE CAJA AZUL</TextBlock>
+                                    </Grid>
+                                </Button.Content>
+                            </Button>
+                            <Button Name="BtnMod26" BorderBrush="{x:Null}" Height="68" Width="170" Margin="1" >
+                                <Button.Background>
+                                    <ImageBrush>
+                                        <ImageBrush.ImageSource>
+                                            <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                        </ImageBrush.ImageSource>
+                                    </ImageBrush>
+                                </Button.Background>
+                                <Button.Content>
+                                    <Grid>
+                                        <TextBlock TextWrapping="Wrap" TextAlignment="Center" 
+                                                   FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18" Foreground="#FF0C3AD6">DUNK MA DRE CAJA AZUL</TextBlock>
+                                    </Grid>
+                                </Button.Content>
+                            </Button>-->
+                        </WrapPanel>
+                    </StackPanel>
+                    <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Stretch" >
+                        <Button Name="BtnUp" BorderBrush="{x:Null}" Height="57"  Width="120" Margin="35,6.5" >
+                            <Button.Background>
+                                <ImageBrush>
+                                    <ImageBrush.ImageSource>
+                                        <BitmapImage UriSource="/Tpv;component/Images/ButtonUp.jpg"/>
+                                    </ImageBrush.ImageSource>
+                                </ImageBrush>
+                            </Button.Background>
+                            <Button.Content>
+                                <TextBlock FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18"></TextBlock>
+                            </Button.Content>
+                        </Button>
+                        <Button Name="BtnClear" BorderBrush="{x:Null}" Height="57"  Width="100" Margin="45,6.5" >
+                            <Button.Background>
+                                <ImageBrush>
+                                    <ImageBrush.ImageSource>
+                                        <BitmapImage UriSource="/Tpv;component/Images/Button.JPG"/>
+                                    </ImageBrush.ImageSource>
+                                </ImageBrush>
+                            </Button.Background>
+                            <Button.Content>
+                                <TextBlock FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18">Clear</TextBlock>
+                            </Button.Content>
+                        </Button>
+                        <Button Name="BtnDown" BorderBrush="{x:Null}" Height="57"  Width="120" Margin="35,6.5" >
+                            <Button.Background>
+                                <ImageBrush>
+                                    <ImageBrush.ImageSource>
+                                        <BitmapImage UriSource="/Tpv;component/Images/ButtonDown.jpg"/>
+                                    </ImageBrush.ImageSource>
+                                </ImageBrush>
+                            </Button.Background>
+                            <Button.Content>
+                                <TextBlock FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18"></TextBlock>
+                            </Button.Content>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+        <Grid Grid.Row="2">
+            <Button Name="BtnOk" Margin="265,10,600,2" BorderBrush="{x:Null}" Click="BtnOk_Click" >
+                <Button.Background>
+                    <ImageBrush>
+                        <ImageBrush.ImageSource>
+                            <BitmapImage UriSource="/Tpv;component/Images/ButtonOk.JPG"/>
+                        </ImageBrush.ImageSource>
+                    </ImageBrush>
+                </Button.Background>
+                <Button.Content>
+                    <TextBlock FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18">OK</TextBlock>
+                </Button.Content>
+            </Button>
+            <Button x:Name="BtnCancel" Margin="535,10,330,2" BorderBrush="{x:Null}" Click="BtnCancel_Click" >
+                <Button.Background>
+                    <ImageBrush>
+                        <ImageBrush.ImageSource>
+                            <BitmapImage UriSource="/Tpv;component/Images/ButtonCancel.JPG"/>
+                        </ImageBrush.ImageSource>
+                    </ImageBrush>
+                </Button.Background>
+                <TextBlock FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18">Cancel</TextBlock>
+            </Button>
+        </Grid>
+    </Grid>
+</Window>
