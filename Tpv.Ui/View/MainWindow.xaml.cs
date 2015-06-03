@@ -18,11 +18,11 @@ namespace Tpv.Ui.View
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(MainWindow));
         private string _lastBarCode;
-        private PosService _posService;
+        //private readonly PosService _posService;
 
         public MainWindow()
         {
-            _posService = new PosService();
+            //_posService = new PosService();
             InitializeComponent();
         }
 
@@ -116,48 +116,73 @@ namespace Tpv.Ui.View
 
         private void ShowResponse(ResponseValidationModel resp, int iCode, string barCode)
         {
-            MainWnd.Dispatcher.Invoke(new Action(() =>
+            if (resp != null && String.IsNullOrEmpty(resp.Status) == false)
             {
-                if (resp != null && String.IsNullOrEmpty(resp.Status) == false)
+                if (!resp.Status.Contains(ConfigurationManager.AppSettings["ValidationOkString"]))
                 {
-                    if (resp.Status.Contains(ConfigurationManager.AppSettings["ValidationOkString"]))
+                    MainWnd.Dispatcher.Invoke(new Action(() =>
                     {
-                        if (_posService.ApplyPromotion(iCode))
-                        {
-                            SuccessStPan.Visibility = Visibility.Visible;
-                            SuccessTxt.Text = resp.Status;
-                            PromoStPan.Visibility = Visibility.Visible;
-                            PromoTxt.Text = Database.DicPromotions[iCode];
-                            TitlePromoTxt.Text = String.Format("Promoción aplicable al código {0}:", barCode);
-                            Log.Info(String.Format(
-                                "Promoción aplicable para el código de barras: {0}. | Respuesta: {1}", barCode,
-                                resp.Status));
-                            SearchBtn.IsEnabled = false;
-                        }
-                        else
-                        {
-                            //TODO
-                        }
+                        SuccessStPan.Visibility = Visibility.Visible;
+                        SuccessTxt.Text = resp.Status;
+                        PromoStPan.Visibility = Visibility.Visible;
+                        PromoTxt.Text = Database.DicPromotions[iCode];
+                        TitlePromoTxt.Text = String.Format("Promoción aplicable al código {0}:", barCode);
+                        SearchBtn.IsEnabled = false;
+                        SelectModifiers(iCode);
+                    }));
+                    Log.Info(String.Format("Promoción aplicable para el código de barras: {0}. | Respuesta: {1}", barCode, resp.Status));
 
-                    }
-                    else
+
+                    //_posService.ApplyPromotion(iCode);
+                    //if (_posService.ApplyPromotion(iCode))
+                    //{
+                    //}
+                    //else
+                    //{
+                    //    //TODO
+                    //}
+
+                }
+                else
+                {
+                    MainWnd.Dispatcher.Invoke(new Action(() =>
                     {
                         ErrorStPan.Visibility = Visibility.Visible;
                         ErrorTxt.Text = resp.Status;
-                        Log.Info(String.Format("Código de barras: {0} no válido. | Respuesta: {1}", barCode, resp.Status));
                         SearchBtn.IsEnabled = true;
-                    }
+                    }));
+                    Log.Info(String.Format("Código de barras: {0} no válido. | Respuesta: {1}", barCode, resp.Status));
                 }
-                else
+            }
+            else
+            {
+                MainWnd.Dispatcher.Invoke(new Action(() =>
                 {
                     ErrorStPan.Visibility = Visibility.Visible;
                     ErrorTxt.Text = "No hubo respuesta por parte del servidor";
                     SearchBtn.IsEnabled = true;
-                    Log.Info(String.Format("Código de barras: {0} no válido. | Respuesta: {1}", barCode, ErrorTxt.Text));
-                }
+                }));
+                Log.Info(String.Format("Código de barras: {0} no válido. | Respuesta: {1}", barCode, ErrorTxt.Text));
+            }
 
+            MainWnd.Dispatcher.Invoke(new Action(() =>
+            {
                 ProgressStPan.Visibility = Visibility.Collapsed;
             }));
+        }
+
+        private void SelectModifiers(int iCode)
+        {
+            var dlg = new PromoModWnd
+            {
+                CodeGroupModifier = iCode
+            };
+            var response = dlg.ShowDialog();
+
+            if (response.HasValue && response.Value)
+            {
+                return;
+            }
         }
 
 
@@ -186,7 +211,11 @@ namespace Tpv.Ui.View
 
                         Log.Info(msg);
                         Log.Info(" ******" + resp.Status + "******");
-                        MainWnd.Dispatcher.Invoke(new Action(() => MessageBox.Show(msg, "TPV", MessageBoxButton.OK, MessageBoxImage.Information)));
+                        MainWnd.Dispatcher.Invoke(new Action(() =>
+                        {
+                            MessageBox.Show(msg, "TPV", MessageBoxButton.OK, MessageBoxImage.Information);
+                            Application.Current.Shutdown();
+                        }));
 
                         ClearAll();
                     }
@@ -218,6 +247,7 @@ namespace Tpv.Ui.View
                 SuccessStPan.Visibility = Visibility.Collapsed;
                 ProgressStPan.Visibility = Visibility.Collapsed;
                 SearchBtn.IsEnabled = true;
+                ApplyBtn.IsEnabled = true;
                 PromoStPan.Visibility = Visibility.Collapsed;
                 PromoTxt.Text = String.Empty;
                 TitlePromoTxt.Text = String.Empty;

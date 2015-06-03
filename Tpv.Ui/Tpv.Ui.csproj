@@ -54,6 +54,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -138,6 +139,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\ItemGroupModifier.cs" />
+    <Compile Include="Model\ItemModifier.cs" />
+    <Compile Include="Service\FactoryButton.cs" />
+    <Compile Include="View\PromoModWnd.xaml.cs">
+      <DependentUpon>PromoModWnd.xaml</DependentUpon>
+    </Compile>
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -157,6 +164,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\PromoModWnd.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -211,6 +222,21 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="computers13.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Button.JPG" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ButtonCancel.JPG" />
+    <Resource Include="Images\ButtonDown.jpg" />
+    <Resource Include="Images\ButtonGrpMod.jpg" />
+    <Resource Include="Images\ButtonLeft.JPG" />
+    <Resource Include="Images\ButtonMsg.JPG" />
+    <Resource Include="Images\ButtonOk.JPG" />
+    <Resource Include="Images\ButtonRight.JPG" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ButtonUp.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
