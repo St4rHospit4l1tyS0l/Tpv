@@ -48,6 +48,90 @@ namespace Tpv.Ui.View
 
         private void SetItemList(ItemTicket ticket)
         {
+            //TODO Verificar sino sobreescribir
+            //if (StPnTicket.Children.Count < _selectedGrpModifer.MaximumVal)
+            //    return;
+
+            if (!ticket.IsMain)
+            {
+                var lstItem = GetTicketItems().Where(e => e.ItemModifier.GroupModifier == _selectedGrpModifer).ToList();
+                if (lstItem.Count >= _selectedGrpModifer.MaximumVal)
+                {
+                    var ticketOld = lstItem[lstItem.Count - 1];
+                    UpdateLastItemTicket(ticket, ticketOld);
+                }
+                else
+                {
+                    InsertItemTicket(ticket);
+                }
+            }
+            else
+            {
+                InsertItemTicket(ticket);
+                return;
+            }
+
+            if (_selectedGrpModifer == null)
+                _selectedGrpModifer = ticket.ItemModifier.GroupModifier;
+
+
+            var bFound = false;
+            for (int i = 0, len = StGroupMod.Children.Count; i < len; i++)
+            {
+                var btnGrpModifier = StGroupMod.Children[i] as Button;
+
+                if (btnGrpModifier == null)
+                    continue;
+
+                var grpModifier = btnGrpModifier.Tag as ItemGroupModifier;
+
+                if (grpModifier == null)
+                    continue;
+
+                if (bFound)
+                {
+                    btnGrpModifier.Focus();
+                    FillModifierSection(grpModifier);
+                    return;
+                }
+
+                if (_selectedGrpModifer == grpModifier)
+                    bFound = true;
+            }
+
+            Close();
+        }
+
+        private void UpdateLastItemTicket(ItemTicket ticket, ItemTicket ticketOld)
+        {
+
+            var stPanelFull = StPnTicket.Children.OfType<StackPanel>().Select(e => new{
+                item = e.Tag as ItemTicket,
+                stPanel = e
+            }).FirstOrDefault(e => e.item != null && e.item == ticketOld);
+
+            if (stPanelFull == null)
+                return;
+
+            if (stPanelFull.stPanel.Children.Count < 2)
+                return;
+
+            var txtField = stPanelFull.stPanel.Children[0] as TextBlock;
+            if (txtField == null)
+                return;
+
+            txtField.Text = ticket.Name;
+
+            txtField = stPanelFull.stPanel.Children[1] as TextBlock;
+            if (txtField == null)
+                return;
+
+            txtField.Text = ticket.PriceTxt;
+            stPanelFull.stPanel.Tag = ticket;
+        }
+
+        private void InsertItemTicket(ItemTicket ticket)
+        {
             var txtItem = new TextBlock
             {
                 Text = ticket.Name,
@@ -84,7 +168,6 @@ namespace Tpv.Ui.View
             stPanel.Children.Add(txtPrice);
 
             StPnTicket.Children.Add(stPanel);
-
         }
 
         private void StPanelOnMouseUp(object sender, MouseButtonEventArgs mouseButtonEventArgs)
@@ -132,7 +215,7 @@ namespace Tpv.Ui.View
                 {
                     var txtChild = childInt as TextBlock;
 
-                    if(txtChild == null)
+                    if (txtChild == null)
                         continue;
 
                     txtChild.Foreground = new SolidColorBrush(Colors.Black);
@@ -154,7 +237,7 @@ namespace Tpv.Ui.View
                     depot = new LasaFOHLib67.IberDepotClass();
                     parent = depot.FindObjectFromId(740, CodeGroupModifier).First();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     MessageBox.Show("Aloha no se está ejecutando o no existe un ticket activo.", "TPV error",
                         MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -205,8 +288,8 @@ namespace Tpv.Ui.View
             if (LstModifierGroup.Count == 0)
                 return;
 
-            LstModifierGroup = LstModifierGroup.OrderBy(e => e.Name).ToList();
-            
+            LstModifierGroup = LstModifierGroup.OrderByDescending(e => e.MaximumVal).ThenBy(e => e.Name).ToList();
+
             var i = 0;
             foreach (var groupModifier in LstModifierGroup)
             {
@@ -223,13 +306,51 @@ namespace Tpv.Ui.View
         {
             var button = o as Button;
 
-            if(button == null)
+            if (button == null)
                 return;
 
             var item = button.Tag as ItemGroupModifier;
-            
-            if(item != null)
+
+            //Validate if ticket must have at least the minium of group modifier
+            if (_selectedGrpModifer != null)
+            {
+                var minSel = _selectedGrpModifer.MinimumVal;
+                var lstTicket = GetTicketItems();
+                if (lstTicket.Count(e => e.ItemModifier.GroupModifier == _selectedGrpModifer) < minSel)
+                {
+                    ShowMessage("You cannot skip required modifier groups the first time you modify an item.");
+                    SelectGroupModifierButton(_selectedGrpModifer);
+                    return;
+                }
+            }
+
+
+            if (item != null)
                 FillModifierSection(item);
+        }
+
+        private void SelectGroupModifierButton(ItemGroupModifier selectedGrpModifer)
+        {
+            var button = StGroupMod.Children.OfType<Button>().Select(e => new
+            {
+                item = e.Tag as ItemGroupModifier,
+                button = e
+            }).FirstOrDefault(e => e.item != null && e.item == selectedGrpModifer);
+
+            if (button == null)
+                return;
+
+            button.button.Focus();
+            _selectedGrpModifer = button.item;
+        }
+
+        private List<ItemTicket> GetTicketItems()
+        {
+            return
+                StPnTicket.Children.OfType<StackPanel>()
+                    .Select(item => item.Tag as ItemTicket)
+                    .Where(itemTk => itemTk != null && itemTk.IsMain == false)
+                    .ToList();
         }
 
 
@@ -316,12 +437,12 @@ namespace Tpv.Ui.View
 
             var item = button.Tag as ItemModifier;
 
-            if(item == null)
+            if (item == null)
                 return;
 
             SetItemList(new ItemTicket
             {
-                Item = item,
+                ItemModifier = item,
                 Name = item.Name,
                 PriceVal = item.PriceVal,
                 IsMain = false
@@ -336,6 +457,21 @@ namespace Tpv.Ui.View
 
         private void BtnOk_Click(object sender, RoutedEventArgs e)
         {
+            var ticket = GetTicketItems();
+
+            foreach (var groupModifier in LstModifierGroup)
+            {
+                if(groupModifier.MinimumVal <= 0)
+                    continue;
+
+                if (ticket.Count(i => i.ItemModifier.GroupModifier == groupModifier) >= groupModifier.MinimumVal)
+                    continue;
+             
+                ShowMessage(String.Format("You must have at least {0} item(s) from the {1} group.", groupModifier.MinimumVal, groupModifier.Name));
+                return;
+            }
+            
+
             DialogResult = true;
             Close();
         }
@@ -379,31 +515,31 @@ namespace Tpv.Ui.View
             if (ScVwMod.ExtentHeight > ScVwMod.ViewportHeight && ScVwMod.ContentVerticalOffset + ScVwMod.ViewportHeight < ScVwMod.ExtentHeight)
                 BtnDown.Visibility = Visibility.Visible;
 
-            if(ScVwMod.ContentVerticalOffset > 0)
+            if (ScVwMod.ContentVerticalOffset > 0)
                 BtnUp.Visibility = Visibility.Visible;
         }
 
         private void BtnClear_OnClick(object sender, RoutedEventArgs e)
         {
-            for (var i = StPnTicket.Children.Count-1; i >= 0; i--)
+            for (var i = StPnTicket.Children.Count - 1; i >= 0; i--)
             {
                 var item = StPnTicket.Children[i] as StackPanel;
-                
-                if(item == null)
+
+                if (item == null)
                     continue;
 
                 var itemTag = item.Tag as ItemTicket;
 
-                if (itemTag == null || itemTag.Item == null)
+                if (itemTag == null || itemTag.ItemModifier == null)
                     continue;
 
-                if (itemTag.Item.GroupModifier == _selectedGrpModifer)
-                {
-                    if (Equals(_selectedItemTicket, item))
-                        _selectedItemTicket = null;
+                if (itemTag.ItemModifier.GroupModifier != _selectedGrpModifer)
+                    continue;
 
-                    StPnTicket.Children.RemoveAt(i);
-                }
+                if (Equals(_selectedItemTicket, item))
+                    _selectedItemTicket = null;
+
+                StPnTicket.Children.RemoveAt(i);
             }
         }
     }

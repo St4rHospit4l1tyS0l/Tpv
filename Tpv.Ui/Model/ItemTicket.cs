@@ -15,6 +15,6 @@ namespace Tpv.Ui.Model
             }
         }
 
-        public ItemModifier Item { get; set; }
+        public ItemModifier ItemModifier { get; set; }
     }
 }
