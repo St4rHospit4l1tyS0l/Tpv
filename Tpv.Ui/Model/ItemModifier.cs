@@ -26,5 +26,7 @@ namespace Tpv.Ui.Model
                 return PriceVal.ToString("0.00");
             }
         }
+
+        public ItemGroupModifier GroupModifier { get; set; }
     }
 }

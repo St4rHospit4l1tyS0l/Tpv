@@ -141,7 +141,11 @@
     </ApplicationDefinition>
     <Compile Include="Model\ItemGroupModifier.cs" />
     <Compile Include="Model\ItemModifier.cs" />
+    <Compile Include="Model\ItemTicket.cs" />
     <Compile Include="Service\FactoryButton.cs" />
+    <Compile Include="View\MsgWnd.xaml.cs">
+      <DependentUpon>MsgWnd.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\PromoModWnd.xaml.cs">
       <DependentUpon>PromoModWnd.xaml</DependentUpon>
     </Compile>
@@ -164,6 +168,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\MsgWnd.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\PromoModWnd.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

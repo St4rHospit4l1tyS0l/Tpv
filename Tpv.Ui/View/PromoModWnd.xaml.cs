@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
 using Tpv.Ui.Model;
 using Tpv.Ui.Service;
 
@@ -20,7 +22,12 @@ namespace Tpv.Ui.View
         }
 
         public int CodeGroupModifier { get; set; }
+        public string NameGroupModifier { get; set; }
         public List<ItemGroupModifier> LstModifierGroup { get; set; }
+
+        private StackPanel _selectedItemTicket;
+
+        private ItemGroupModifier _selectedGrpModifer;
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -29,8 +36,108 @@ namespace Tpv.Ui.View
 
         private void InitModifierGroup()
         {
-
+            TxtTitle.Text = "Modify " + NameGroupModifier;
+            SetItemList(new ItemTicket
+            {
+                Name = NameGroupModifier,
+                IsMain = true,
+                PriceVal = 0,
+            });
             ReadFromAloha();
+        }
+
+        private void SetItemList(ItemTicket ticket)
+        {
+            var txtItem = new TextBlock
+            {
+                Text = ticket.Name,
+                //Foreground = new SolidColorBrush(Color.FromRgb(51, 204, 255)),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Margin = new Thickness(5, 0, 1, 0),
+                FontFamily = new FontFamily("Batang"),
+                FontSize = 16,
+                Width = 220
+            };
+
+            var txtPrice = new TextBlock
+            {
+                Text = ticket.PriceTxt,
+                //Foreground = new SolidColorBrush(Color.FromRgb(51, 204, 255)),
+                HorizontalAlignment = HorizontalAlignment.Right,
+                TextAlignment = TextAlignment.Right,
+                Margin = new Thickness(1, 0, 0, 0),
+                FontFamily = new FontFamily("Batang"),
+                FontSize = 16,
+                Width = 50
+            };
+
+            var stPanel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                //Background = new SolidColorBrush(Colors.Black),
+                Tag = ticket
+            };
+
+            stPanel.MouseUp += StPanelOnMouseUp;
+
+            stPanel.Children.Add(txtItem);
+            stPanel.Children.Add(txtPrice);
+
+            StPnTicket.Children.Add(stPanel);
+
+        }
+
+        private void StPanelOnMouseUp(object sender, MouseButtonEventArgs mouseButtonEventArgs)
+        {
+            var stkPanel = sender as StackPanel;
+
+            if (stkPanel == null)
+                return;
+
+            var item = stkPanel.Tag as ItemTicket;
+
+            if (item == null)
+                return;
+
+            ClearAllItems();
+            _selectedItemTicket = null;
+
+            if (item.IsMain)
+                return;
+
+            _selectedItemTicket = stkPanel;
+            stkPanel.Background = new SolidColorBrush(Colors.Black);
+            foreach (var childInt in stkPanel.Children)
+            {
+                var txtChild = childInt as TextBlock;
+
+                if (txtChild == null)
+                    continue;
+
+                txtChild.Foreground = new SolidColorBrush(Color.FromRgb(51, 204, 255));
+            }
+        }
+
+        private void ClearAllItems()
+        {
+            foreach (var child in StPnTicket.Children)
+            {
+                var stChild = child as StackPanel;
+
+                if (stChild == null)
+                    continue;
+
+                stChild.Background = null;
+                foreach (var childInt in stChild.Children)
+                {
+                    var txtChild = childInt as TextBlock;
+
+                    if(txtChild == null)
+                        continue;
+
+                    txtChild.Foreground = new SolidColorBrush(Colors.Black);
+                }
+            }
         }
 
         private void ReadFromAloha()
@@ -39,8 +146,21 @@ namespace Tpv.Ui.View
             {
                 LstModifierGroup = new List<ItemGroupModifier>();
 
-                LasaFOHLib67.IberDepot depot = new LasaFOHLib67.IberDepotClass();
-                LasaFOHLib67.IIberObject parent = depot.FindObjectFromId(740, CodeGroupModifier).First();
+                LasaFOHLib67.IberDepot depot;
+                LasaFOHLib67.IIberObject parent;
+
+                try
+                {
+                    depot = new LasaFOHLib67.IberDepotClass();
+                    parent = depot.FindObjectFromId(740, CodeGroupModifier).First();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Aloha no se está ejecutando o no existe un ticket activo.", "TPV error",
+                        MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    Close();
+                    return;
+                }
 
                 var modgrpIds = new List<int>();
                 for (var x = 1; x <= 10; x++)
@@ -74,6 +194,7 @@ namespace Tpv.Ui.View
                 {
                     // expected
                 }
+
             }
             catch (Exception)
             {
@@ -160,7 +281,8 @@ namespace Tpv.Ui.View
                             {
                                 Id = itemId,
                                 Name = item.GetStringVal("LONGNAME"),
-                                Price = item.GetStringVal("PRICE")
+                                Price = item.GetStringVal("PRICE"),
+                                GroupModifier = groupModifier
                             });
                         }
                         catch (Exception)
@@ -170,17 +292,40 @@ namespace Tpv.Ui.View
                     }
                 }
 
-
+                listModifiers = listModifiers.OrderBy(e => e.Name).ToList();
                 foreach (var modifier in listModifiers)
                 {
-                    var button = FactoryButton.CreateModifierButton(modifier);
+                    var button = FactoryButton.CreateModifierButton(modifier, OnClickModifier);
                     WrModifier.Children.Add(button);
                 }
+
+                _selectedGrpModifer = groupModifier;
             }
             catch (Exception)
             {
                 // expected
             }
+        }
+
+        public void OnClickModifier(object o, RoutedEventArgs routedEventArgs)
+        {
+            var button = o as Button;
+
+            if (button == null)
+                return;
+
+            var item = button.Tag as ItemModifier;
+
+            if(item == null)
+                return;
+
+            SetItemList(new ItemTicket
+            {
+                Item = item,
+                Name = item.Name,
+                PriceVal = item.PriceVal,
+                IsMain = false
+            });
         }
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
@@ -193,6 +338,73 @@ namespace Tpv.Ui.View
         {
             DialogResult = true;
             Close();
+        }
+
+        private void BtnDelete_Click(object sender, RoutedEventArgs e)
+        {
+            if (_selectedItemTicket == null)
+            {
+                ShowMessage("Select the modifier to delete by touching the Work Area above this button.");
+                return;
+            }
+
+            StPnTicket.Children.Remove(_selectedItemTicket);
+            _selectedItemTicket = null;
+        }
+
+        private void ShowMessage(string msgTx)
+        {
+            var msg = new MsgWnd(msgTx)
+            {
+                Owner = this
+            };
+            msg.ShowDialog();
+        }
+
+        private void BtnDown_Click(object sender, RoutedEventArgs e)
+        {
+            ScVwMod.PageDown();
+        }
+
+        private void BtnUp_Click(object sender, RoutedEventArgs e)
+        {
+            ScVwMod.PageUp();
+        }
+
+        private void ScVwMod_OnScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            BtnDown.Visibility = Visibility.Hidden;
+            BtnUp.Visibility = Visibility.Hidden;
+
+            if (ScVwMod.ExtentHeight > ScVwMod.ViewportHeight && ScVwMod.ContentVerticalOffset + ScVwMod.ViewportHeight < ScVwMod.ExtentHeight)
+                BtnDown.Visibility = Visibility.Visible;
+
+            if(ScVwMod.ContentVerticalOffset > 0)
+                BtnUp.Visibility = Visibility.Visible;
+        }
+
+        private void BtnClear_OnClick(object sender, RoutedEventArgs e)
+        {
+            for (var i = StPnTicket.Children.Count-1; i >= 0; i--)
+            {
+                var item = StPnTicket.Children[i] as StackPanel;
+                
+                if(item == null)
+                    continue;
+
+                var itemTag = item.Tag as ItemTicket;
+
+                if (itemTag == null || itemTag.Item == null)
+                    continue;
+
+                if (itemTag.Item.GroupModifier == _selectedGrpModifer)
+                {
+                    if (Equals(_selectedItemTicket, item))
+                        _selectedItemTicket = null;
+
+                    StPnTicket.Children.RemoveAt(i);
+                }
+            }
         }
     }
 }

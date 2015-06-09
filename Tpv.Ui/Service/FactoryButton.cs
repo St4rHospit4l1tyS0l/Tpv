@@ -39,7 +39,7 @@ namespace Tpv.Ui.Service
             return button;
         }
 
-        public static Button CreateModifierButton(ItemModifier modifier)
+        public static Button CreateModifierButton(ItemModifier modifier, Action<object, RoutedEventArgs> onClickModifier)
         {
             var grid = new Grid();
 
@@ -76,6 +76,8 @@ namespace Tpv.Ui.Service
                 Content = grid,
                 Tag = modifier
             };
+
+            button.Click += new RoutedEventHandler(onClickModifier);
 
             return button;
         }

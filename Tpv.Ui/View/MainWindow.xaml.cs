@@ -116,9 +116,15 @@ namespace Tpv.Ui.View
 
         private void ShowResponse(ResponseValidationModel resp, int iCode, string barCode)
         {
+            MainWnd.Dispatcher.Invoke(new Action(() =>
+            {
+                SelectModifiers(iCode);
+                return;
+            }));
+
             if (resp != null && String.IsNullOrEmpty(resp.Status) == false)
             {
-                if (!resp.Status.Contains(ConfigurationManager.AppSettings["ValidationOkString"]))
+                if (resp.Status.Contains(ConfigurationManager.AppSettings["ValidationOkString"]))
                 {
                     MainWnd.Dispatcher.Invoke(new Action(() =>
                     {
@@ -175,8 +181,11 @@ namespace Tpv.Ui.View
         {
             var dlg = new PromoModWnd
             {
-                CodeGroupModifier = iCode
+                Owner = this,
+                CodeGroupModifier = iCode,
+                NameGroupModifier = Database.DicPromotions[iCode]
             };
+
             var response = dlg.ShowDialog();
 
             if (response.HasValue && response.Value)

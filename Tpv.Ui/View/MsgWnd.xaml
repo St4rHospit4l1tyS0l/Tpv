@@ -1,0 +1,20 @@
+﻿<Window x:Class="Tpv.Ui.View.MsgWnd"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Height="442" Width="885" WindowStyle="None" 
+        ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Topmost="True" ShowInTaskbar="False">
+    <Grid MouseUp="Grid_OnMouseUp">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="285*"/>
+            <RowDefinition Height="157*"/>
+        </Grid.RowDefinitions>
+        <Grid.Background>
+            <ImageBrush>
+                <ImageBrush.ImageSource>
+                    <BitmapImage UriSource="/Tpv;component/Images/ButtonMsg.JPG"/>
+                </ImageBrush.ImageSource>
+            </ImageBrush>
+        </Grid.Background>
+        <TextBlock Grid.Row="0" Margin="349.5,193,160.5,0" Name="TxtMsg" TextWrapping="Wrap" FontFamily="Batang" FontSize="18" 
+                   TextAlignment="Center"/>
+    </Grid>
+</Window>
