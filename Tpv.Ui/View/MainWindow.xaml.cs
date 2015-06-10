@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
@@ -188,9 +189,69 @@ namespace Tpv.Ui.View
 
             var response = dlg.ShowDialog();
 
-            if (response.HasValue && response.Value)
-            {
+            if (response.HasValue == false || response.Value == false)
                 return;
+
+            //Ingresar los items a Aloha
+            TryToAddItemsToAloha(dlg);
+
+        }
+
+        private void TryToAddItemsToAloha(PromoModWnd dlg)
+        {
+            var iTries = 3;
+            do
+            {
+                if (AddItemsToAloha(dlg))
+                {
+                    Close();
+                    return;
+                }
+
+                Thread.Sleep(1000);
+            } while (iTries-- > 0);
+        }
+
+        private bool AddItemsToAloha(PromoModWnd dlg)
+        {
+            try
+            {
+                LasaFOHLib67.IberFuncs funcs = new LasaFOHLib67.IberFuncsClass();
+
+                var parentEntry = funcs.BeginItem(dlg.TermId, dlg.CheckId, dlg.CodeGroupModifier, "", -999999999);
+
+                var ticketItems = dlg.GetTicketItems();
+                foreach (var mod in ticketItems)
+                {
+                    funcs.ModItem(dlg.TermId, parentEntry, mod.ItemModifier.Id, "", -999999999, mod.ModCode);
+                }
+
+                funcs.EndItem(dlg.TermId);
+                funcs.RefreshCheckDisplay();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    PropertyInfo propInfo = ex.GetType().GetProperty("HResult", BindingFlags.Instance | BindingFlags.NonPublic);
+                    Int32 hresult = Convert.ToInt32(propInfo.GetValue(ex, null));
+
+                    if (((hresult >> 16) & 0x07ff) != 0x06) // this is not an Aloha COM Error
+                    {
+                        Log.Error(ex.ToString());
+                        return false;
+                    }
+
+                    Log.Error(string.Format("Aloha returned error code {0}", hresult & 0xFFF));
+                    return false;
+
+                }
+                catch (Exception exIn)
+                {
+                    Log.Error(exIn.Message + " | " + exIn.StackTrace);
+                    return false;
+                }
             }
         }
 

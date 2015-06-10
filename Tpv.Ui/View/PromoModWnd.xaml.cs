@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using log4net;
 using Tpv.Ui.Model;
 using Tpv.Ui.Service;
 
@@ -15,7 +16,10 @@ namespace Tpv.Ui.View
     /// </summary>
     public partial class PromoModWnd
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(PromoModWnd));
 
+        public int TermId { get; set; }
+        public int CheckId { get; set; }
         public int CodeGroupModifier { get; set; }
         public string NameGroupModifier { get; set; }
         public List<ItemGroupModifier> LstModifierGroup { get; set; }
@@ -101,7 +105,7 @@ namespace Tpv.Ui.View
                     bFound = true;
             }
 
-            Close();
+            CheckAndCloseWithOk();
         }
 
         private void UpdateLastItemTicket(ItemTicket ticket, ItemTicket ticketOld)
@@ -236,13 +240,41 @@ namespace Tpv.Ui.View
 
                 try
                 {
+                    try
+                    {
+                        depot = new LasaFOHLib67.IberDepotClass();
+                        LasaFOHLib67.IIberObject localState = depot.GetEnum(720).First();
+
+                        try
+                        {
+                            // get the current employee
+                            LasaFOHLib67.IIberObject emp = localState.GetEnum(723).First();
+                            Console.WriteLine("Empleado: {0} {1}", emp.GetStringVal("FIRSTNAME"), emp.GetStringVal("LASTNAME"));
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex.Message + " | " + ex.StackTrace);
+                            MessageBox.Show("Verifique que exista un usuario con sesión iniciada en Aloha.", "TPV error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            Close();
+                        }
+
+                        TermId = localState.GetLongVal("TERMINAL_NUM");
+                        CheckId = localState.GetLongVal("CURRENT_CHECK_ID");
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex.Message + " | " + ex.StackTrace);
+                        MessageBox.Show("Verifique que exista un ticket activo.", "TPV error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        Close();
+                    }
+
                     depot = new LasaFOHLib67.IberDepotClass();
                     parent = depot.FindObjectFromId(740, CodeGroupModifier).First();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Aloha no se está ejecutando o no existe un ticket activo.", "TPV error",
-                        MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    Log.Error(ex.Message + " | " + ex.StackTrace);
+                    MessageBox.Show("Aloha no se está ejecutando o no existe un ticket activo.", "TPV error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     Close();
                     return;
                 }
@@ -304,6 +336,8 @@ namespace Tpv.Ui.View
             }
         }
 
+
+
         public void OnClickGroupModifier(object o, RoutedEventArgs routedEventArgs)
         {
             var button = o as Button;
@@ -346,7 +380,7 @@ namespace Tpv.Ui.View
             _selectedGrpModifer = button.item;
         }
 
-        private List<ItemTicket> GetTicketItems()
+        public List<ItemTicket> GetTicketItems()
         {
             return
                 StPnTicket.Children.OfType<StackPanel>()
@@ -465,21 +499,25 @@ namespace Tpv.Ui.View
 
         private void BtnOk_Click(object sender, RoutedEventArgs e)
         {
+            CheckAndCloseWithOk();
+        }
+
+        private void CheckAndCloseWithOk()
+        {
             var ticket = GetTicketItems();
 
             foreach (var groupModifier in LstModifierGroup)
             {
-                if(groupModifier.MinimumVal <= 0)
+                if (groupModifier.MinimumVal <= 0)
                     continue;
 
                 if (ticket.Count(i => i.ItemModifier.GroupModifier == groupModifier) >= groupModifier.MinimumVal)
                     continue;
-             
-                ShowMessage(String.Format("You must have at least {0} item(s) from the {1} group.", groupModifier.MinimumVal, groupModifier.Name));
+
+                ShowMessage(String.Format("You must have at least {0} item(s) from the {1} group.", groupModifier.MinimumVal,
+                    groupModifier.Name));
                 return;
             }
-            
-
             DialogResult = true;
             Close();
         }
