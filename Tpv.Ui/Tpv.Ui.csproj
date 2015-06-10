@@ -142,6 +142,7 @@
     <Compile Include="Model\ItemGroupModifier.cs" />
     <Compile Include="Model\ItemModifier.cs" />
     <Compile Include="Model\ItemTicket.cs" />
+    <Compile Include="Model\ModCode.cs" />
     <Compile Include="Service\FactoryButton.cs" />
     <Compile Include="View\MsgWnd.xaml.cs">
       <DependentUpon>MsgWnd.xaml</DependentUpon>

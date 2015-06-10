@@ -16,11 +16,6 @@ namespace Tpv.Ui.View
     public partial class PromoModWnd
     {
 
-        public PromoModWnd()
-        {
-            InitializeComponent();
-        }
-
         public int CodeGroupModifier { get; set; }
         public string NameGroupModifier { get; set; }
         public List<ItemGroupModifier> LstModifierGroup { get; set; }
@@ -28,6 +23,15 @@ namespace Tpv.Ui.View
         private StackPanel _selectedItemTicket;
 
         private ItemGroupModifier _selectedGrpModifer;
+
+        private const int NORMAL_MOD = 1;
+
+        private int _selectedModCode = NORMAL_MOD;
+
+        public PromoModWnd()
+        {
+            InitializeComponent();
+        }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -47,13 +51,12 @@ namespace Tpv.Ui.View
         }
 
         private void SetItemList(ItemTicket ticket)
-        {
-            //TODO Verificar sino sobreescribir
-            //if (StPnTicket.Children.Count < _selectedGrpModifer.MaximumVal)
-            //    return;
-
+        {            
             if (!ticket.IsMain)
             {
+                ticket.ModCode = _selectedModCode;
+                _selectedModCode = NORMAL_MOD;
+ 
                 var lstItem = GetTicketItems().Where(e => e.ItemModifier.GroupModifier == _selectedGrpModifer).ToList();
                 if (lstItem.Count >= _selectedGrpModifer.MaximumVal)
                 {
@@ -73,7 +76,6 @@ namespace Tpv.Ui.View
 
             if (_selectedGrpModifer == null)
                 _selectedGrpModifer = ticket.ItemModifier.GroupModifier;
-
 
             var bFound = false;
             for (int i = 0, len = StGroupMod.Children.Count; i < len; i++)
@@ -120,7 +122,7 @@ namespace Tpv.Ui.View
             if (txtField == null)
                 return;
 
-            txtField.Text = ticket.Name;
+            txtField.Text = ticket.NameFull;
 
             txtField = stPanelFull.stPanel.Children[1] as TextBlock;
             if (txtField == null)
@@ -134,7 +136,7 @@ namespace Tpv.Ui.View
         {
             var txtItem = new TextBlock
             {
-                Text = ticket.Name,
+                Text = ticket.NameFull,
                 //Foreground = new SolidColorBrush(Color.FromRgb(51, 204, 255)),
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 Margin = new Thickness(5, 0, 1, 0),
@@ -421,11 +423,17 @@ namespace Tpv.Ui.View
                 }
 
                 _selectedGrpModifer = groupModifier;
+                SetCurrentTxtChoose();
             }
             catch (Exception)
             {
                 // expected
             }
+        }
+
+        private void SetCurrentTxtChoose()
+        {
+            TxtChoose.Text = _selectedGrpModifer.MinimumVal == 0 ? String.Format("Choose up to {0}", _selectedGrpModifer.MaximumVal) : String.Format("Choose {0}", _selectedGrpModifer.MinimumVal);
         }
 
         public void OnClickModifier(object o, RoutedEventArgs routedEventArgs)
@@ -541,6 +549,24 @@ namespace Tpv.Ui.View
 
                 StPnTicket.Children.RemoveAt(i);
             }
+        }
+
+        private void BtnModCode_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            if (button == null)
+                return;
+
+            int iVal;
+
+            if (int.TryParse((string) button.Tag, out iVal) == false)
+                return;
+
+            _selectedModCode = iVal;
+
+            ModCode code;
+            if (ItemTicket.DicModCode.TryGetValue(_selectedModCode, out code))
+                TxtChoose.Text = String.Format("Select \"{0}\" item", code.Name);
         }
     }
 }

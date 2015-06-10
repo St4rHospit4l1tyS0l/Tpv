@@ -100,11 +100,11 @@
                         <RowDefinition Height="446*"/>
                         <RowDefinition Height="66*"/>
                     </Grid.RowDefinitions>
-                    <StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Center" Margin="245.5,0" Width="66">
-                        <TextBlock TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="16"> Choose 1</TextBlock>
+                    <StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Center" Width="300">
+                        <TextBlock TextAlignment="Center" Name="TxtChoose" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="300" FontSize="17"></TextBlock>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="6,1.5" Height="50" Width="545">
-                        <Button Name="BtnModNo" BorderBrush="{x:Null}" Height="50" Width="60" >
+                        <Button Name="BtnModNo" BorderBrush="{x:Null}" Height="50" Width="60" Tag="2" Click="BtnModCode_Click" >
                             <Button.Background>
                                 <ImageBrush>
                                     <ImageBrush.ImageSource>
@@ -116,7 +116,7 @@
                                 <TextBlock FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18">No</TextBlock>
                             </Button.Content>
                         </Button>
-                        <Button Name="BtnModExtra" BorderBrush="{x:Null}" Height="50" Width="60" >
+                        <Button Name="BtnModExtra" BorderBrush="{x:Null}" Height="50" Width="60" Tag="3" Click="BtnModCode_Click">
                             <Button.Background>
                                 <ImageBrush>
                                     <ImageBrush.ImageSource>
@@ -128,7 +128,7 @@
                                 <TextBlock FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18">Extra</TextBlock>
                             </Button.Content>
                         </Button>
-                        <Button Name="BtnModSide" BorderBrush="{x:Null}" Height="50" Width="60" >
+                        <Button Name="BtnModSide" BorderBrush="{x:Null}" Height="50" Width="60" Tag="4" Click="BtnModCode_Click">
                             <Button.Background>
                                 <ImageBrush>
                                     <ImageBrush.ImageSource>
@@ -140,7 +140,7 @@
                                 <TextBlock FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18">Side</TextBlock>
                             </Button.Content>
                         </Button>
-                        <Button Name="BtnModLight" BorderBrush="{x:Null}" Height="50" Width="60" >
+                        <Button Name="BtnModLight" BorderBrush="{x:Null}" Height="50" Width="60" Tag="14" Click="BtnModCode_Click">
                             <Button.Background>
                                 <ImageBrush>
                                     <ImageBrush.ImageSource>
@@ -152,7 +152,7 @@
                                 <TextBlock FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18">Light</TextBlock>
                             </Button.Content>
                         </Button>
-                        <Button Name="BtnModHeavy" BorderBrush="{x:Null}" Height="50" Width="60" >
+                        <Button Name="BtnModHeavy" BorderBrush="{x:Null}" Height="50" Width="60" Tag="15" Click="BtnModCode_Click">
                             <Button.Background>
                                 <ImageBrush>
                                     <ImageBrush.ImageSource>
@@ -164,7 +164,7 @@
                                 <TextBlock FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18">Heavy</TextBlock>
                             </Button.Content>
                         </Button>
-                        <Button Name="BtnModOnly" BorderBrush="{x:Null}" Height="50" Width="60" >
+                        <Button Name="BtnModOnly" BorderBrush="{x:Null}" Height="50" Width="60" Tag="16" Click="BtnModCode_Click">
                             <Button.Background>
                                 <ImageBrush>
                                     <ImageBrush.ImageSource>
@@ -176,7 +176,7 @@
                                 <TextBlock FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18">Only</TextBlock>
                             </Button.Content>
                         </Button>
-                        <Button Name="BtnModHalf" BorderBrush="{x:Null}" Height="50" Width="60" >
+                        <Button Name="BtnModHalf" BorderBrush="{x:Null}" Height="50" Width="60" Tag="17" Click="BtnModCode_Click">
                             <Button.Background>
                                 <ImageBrush>
                                     <ImageBrush.ImageSource>
@@ -188,7 +188,7 @@
                                 <TextBlock FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18">Half</TextBlock>
                             </Button.Content>
                         </Button>
-                        <Button Name="BtnModQuarter" BorderBrush="{x:Null}" Height="50" Width="65" >
+                        <Button Name="BtnModQuarter" BorderBrush="{x:Null}" Height="50" Width="65" Tag="18" Click="BtnModCode_Click">
                             <Button.Background>
                                 <ImageBrush>
                                     <ImageBrush.ImageSource>
@@ -200,7 +200,7 @@
                                 <TextBlock FontWeight="Bold" FontFamily="Franklin Gothic Medium" FontSize="18">Quarter</TextBlock>
                             </Button.Content>
                         </Button>
-                        <Button Name="BtnModAdd" BorderBrush="{x:Null}" Height="50" Width="60" >
+                        <Button Name="BtnModAdd" BorderBrush="{x:Null}" Height="50" Width="60" Tag="19" Click="BtnModCode_Click">
                             <Button.Background>
                                 <ImageBrush>
                                     <ImageBrush.ImageSource>
