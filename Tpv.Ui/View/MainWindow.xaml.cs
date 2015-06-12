@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Web.Script.Serialization;
 using System.Windows;
 using System.Windows.Input;
 using log4net;
@@ -117,29 +120,24 @@ namespace Tpv.Ui.View
 
         private void ShowResponse(ResponseValidationModel resp, int iCode, string barCode)
         {
-            MainWnd.Dispatcher.Invoke(new Action(() =>
-            {
-                SelectModifiers(iCode);
-                return;
-            }));
 
             if (resp != null && String.IsNullOrEmpty(resp.Status) == false)
             {
-                if (resp.Status.Contains(ConfigurationManager.AppSettings["ValidationOkString"]))
+                if (!resp.Status.Contains(ConfigurationManager.AppSettings["ValidationOkString"]))
                 {
-                    MainWnd.Dispatcher.Invoke(new Action(() =>
-                    {
-                        SuccessStPan.Visibility = Visibility.Visible;
-                        SuccessTxt.Text = resp.Status;
-                        PromoStPan.Visibility = Visibility.Visible;
-                        PromoTxt.Text = Database.DicPromotions[iCode];
-                        TitlePromoTxt.Text = String.Format("Promoción aplicable al código {0}:", barCode);
-                        SearchBtn.IsEnabled = false;
-                        SelectModifiers(iCode);
-                    }));
+                    MainWnd.Dispatcher.Invoke(new Action(() => SelectModifiers(iCode, barCode)));
                     Log.Info(String.Format("Promoción aplicable para el código de barras: {0}. | Respuesta: {1}", barCode, resp.Status));
 
-
+                    //MainWnd.Dispatcher.Invoke(new Action(() =>
+                    //{
+                    //    SuccessStPan.Visibility = Visibility.Visible;
+                    //    SuccessTxt.Text = resp.Status;
+                    //    PromoStPan.Visibility = Visibility.Visible;
+                    //    PromoTxt.Text = Database.DicPromotions[iCode];
+                    //    TitlePromoTxt.Text = String.Format("Promoción aplicable al código {0}:", barCode);
+                    //    SearchBtn.IsEnabled = false;
+                    //    SelectModifiers(iCode, barCode);
+                    //}));
                     //_posService.ApplyPromotion(iCode);
                     //if (_posService.ApplyPromotion(iCode))
                     //{
@@ -178,7 +176,7 @@ namespace Tpv.Ui.View
             }));
         }
 
-        private void SelectModifiers(int iCode)
+        private void SelectModifiers(int iCode, string barCode)
         {
             var dlg = new PromoModWnd
             {
@@ -193,17 +191,18 @@ namespace Tpv.Ui.View
                 return;
 
             //Ingresar los items a Aloha
-            TryToAddItemsToAloha(dlg);
-
+            TryToAddItemsToAloha(dlg, barCode);
+            return;
         }
 
-        private void TryToAddItemsToAloha(PromoModWnd dlg)
+        private void TryToAddItemsToAloha(PromoModWnd dlg, string barCode)
         {
             var iTries = 3;
             do
             {
                 if (AddItemsToAloha(dlg))
                 {
+                    AddPromoToFile(dlg, barCode);
                     Close();
                     return;
                 }
@@ -211,6 +210,78 @@ namespace Tpv.Ui.View
                 Thread.Sleep(1000);
             } while (iTries-- > 0);
         }
+
+        private void AddPromoToFile(PromoModWnd dlg, string barCode)
+        {
+            var promo = new PromoCheckFile
+            {
+                CheckId = dlg.CheckId,
+                LstPromo = new List<PromoItemFile>{
+                    new PromoItemFile
+                    {
+                        PromoId = dlg.CodeGroupModifier,
+                        BarCode = barCode,
+                        DateTx = DateTime.Now.ToString("yy/MM/dd")
+                    }
+                }
+            };
+
+            SaveFile(promo);
+
+        }
+
+        private void SaveFile(PromoCheckFile promo)
+        {
+            var iTries = 3;
+            
+            while (iTries-- >= 0)
+            {
+                try
+                {
+                    var lstPromos = new List<PromoCheckFile>();
+                    var file = ConfigurationManager.AppSettings["MsgPromoFile"];
+                    if (File.Exists(file))
+                    {
+                        try
+                        {
+                            var fileInfo = File.ReadAllText(file);
+                            var des = new JavaScriptSerializer().Deserialize<List<PromoCheckFile>>(fileInfo);
+
+                            var check = des.FirstOrDefault(e => e.CheckId == promo.CheckId);
+
+                            if (check != null)
+                            {
+                                if (check.LstPromo.Any(e => e.BarCode == promo.LstPromo[0].BarCode) == false)
+                                    check.LstPromo.Add(promo.LstPromo[0]);
+                            }
+                            else
+                            {
+                                lstPromos.Add(promo);
+                            }
+                        }
+                        catch (Exception ex1)
+                        {
+                            Log.Error(String.Format("{0} | {1}", ex1.Message, ex1.StackTrace));
+                            if (lstPromos.Count == 0)
+                                lstPromos.Add(promo);
+                        }
+                    }
+                    else
+                    {
+                        lstPromos.Add(promo);
+                    }
+
+                    var ser = new JavaScriptSerializer().Serialize(lstPromos);
+                    File.WriteAllText(file, ser);
+                    break;
+                }
+                catch (Exception ex2)
+                {
+                    Log.Error(String.Format("{0} | {1}", ex2.Message, ex2.StackTrace));
+                }            
+            }
+        }
+
 
         private bool AddItemsToAloha(PromoModWnd dlg)
         {
@@ -349,5 +420,4 @@ namespace Tpv.Ui.View
             LblMax.Visibility = Visibility.Hidden;
         }
     }
-
 }

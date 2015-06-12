@@ -147,6 +147,8 @@
     <Compile Include="View\MsgWnd.xaml.cs">
       <DependentUpon>MsgWnd.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Model\PromoCheckFile.cs" />
+    <Compile Include="Model\PromoItemFile.cs" />
     <Compile Include="View\PromoModWnd.xaml.cs">
       <DependentUpon>PromoModWnd.xaml</DependentUpon>
     </Compile>

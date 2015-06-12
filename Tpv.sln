@@ -7,8 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tpv.Ui", "Tpv.Ui\Tpv.Ui.csp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D7B3C7CC-B85C-497E-876A-7C24E098309E}"
 	ProjectSection(SolutionItems) = preProject
+		lib\AdmInterceptActivity.dll = lib\AdmInterceptActivity.dll
 		DbPromo.ini = DbPromo.ini
+		DbPromoConfig.ini = DbPromoConfig.ini
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tpv.Aloha", "Tpv.Aloha\Tpv.Aloha.csproj", "{C474ADF9-31C2-42C0-A950-0464780FD4DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +36,14 @@ Global
 		{370C54BD-D94D-44EB-AD65-5EF7D3C2B5A4}.Release|x64.Build.0 = Release|Any CPU
 		{370C54BD-D94D-44EB-AD65-5EF7D3C2B5A4}.Release|x86.ActiveCfg = Release|x86
 		{370C54BD-D94D-44EB-AD65-5EF7D3C2B5A4}.Release|x86.Build.0 = Release|x86
+		{C474ADF9-31C2-42C0-A950-0464780FD4DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C474ADF9-31C2-42C0-A950-0464780FD4DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C474ADF9-31C2-42C0-A950-0464780FD4DA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C474ADF9-31C2-42C0-A950-0464780FD4DA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C474ADF9-31C2-42C0-A950-0464780FD4DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C474ADF9-31C2-42C0-A950-0464780FD4DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C474ADF9-31C2-42C0-A950-0464780FD4DA}.Release|x64.ActiveCfg = Release|Any CPU
+		{C474ADF9-31C2-42C0-A950-0464780FD4DA}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
