@@ -2,9 +2,9 @@
 {
     public class ResponseValidationModel
     {
-        public string Status { get; set; }
+        public string status { get; set; }
 
-        public Links Links { get; set; }
+        //public Links Links { get; set; }
         
     }
 

@@ -137,8 +137,8 @@ namespace Tpv.Aloha.BsLogic
 
                 if (resp == null) 
                     continue;
-                
-                Logger.Write("INFO: Al eliminar la promoción, el resultado es: " + resp);
+
+                //Logger.Write("INFO: Al eliminar la promoción, el resultado es: " + resp.Status);
                 break;
             }
         }
@@ -227,9 +227,11 @@ namespace Tpv.Aloha.BsLogic
 
         public void CloseCheck(int iemployeeId, int iqueueId, int itableId, int icheckId)
         {
-            if (DbReader.ReadDictionaryFromFile(Constants.FILE_NAME_CONFIG) == false){
+            var fileName = Path.Combine(Environment.CurrentDirectory, Constants.FILE_NAME_CONFIG);
+            if (DbReader.ReadDictionaryFromFile(fileName) == false){
                 Logger.Write("No existe el archivo de configuración  del TPV o no se pudo leer de forma correcta");
-                MessageBox.Show("No existe el archivo de configuración  del TPV o no se pudo leer de forma correcta");
+                MessageBox.Show(String.Format("No existe el archivo de configuración {0} del TPV o no se pudo leer de forma correcta", 
+                    fileName));
             }
             
             GetInternalItems(icheckId);               

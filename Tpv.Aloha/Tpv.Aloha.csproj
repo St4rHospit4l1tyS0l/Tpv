@@ -51,6 +51,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BsLogic\IPosActService.cs" />
+    <Compile Include="Com\InterfacePosActCom.cs" />
+    <Compile Include="Com\InterfacePosActComV10.cs" />
+    <Compile Include="Com\InterfacePosActComV11.cs" />
+    <Compile Include="Com\InterfacePosActComV12.cs" />
+    <Compile Include="Com\InterfacePosActComV2.cs" />
+    <Compile Include="Com\InterfacePosActComV3.cs" />
+    <Compile Include="Com\InterfacePosActComV4.cs" />
+    <Compile Include="Com\InterfacePosActComV5.cs" />
+    <Compile Include="Com\InterfacePosActComV6.cs" />
+    <Compile Include="Com\InterfacePosActComV7.cs" />
+    <Compile Include="Com\InterfacePosActComV8.cs" />
+    <Compile Include="Com\InterfacePosActComV9.cs" />
     <Compile Include="Model\ItemModel.cs" />
     <Compile Include="BsLogic\Logger.cs" />
     <Compile Include="BsLogic\PosActService.cs" />

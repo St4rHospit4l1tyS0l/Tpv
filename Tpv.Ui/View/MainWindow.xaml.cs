@@ -28,6 +28,7 @@ namespace Tpv.Ui.View
         {
             //_posService = new PosService();
             InitializeComponent();
+            //RestService.MakeRequest("http://dunkin.rkpeople.com/developer/dunkin_ws/public/validar-codigo-barra/2100081941985&1");
         }
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
@@ -173,6 +174,7 @@ namespace Tpv.Ui.View
             MainWnd.Dispatcher.Invoke(new Action(() =>
             {
                 ProgressStPan.Visibility = Visibility.Collapsed;
+                SearchBtn.IsEnabled = true;
             }));
         }
 
