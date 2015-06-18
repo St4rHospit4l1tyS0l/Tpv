@@ -124,7 +124,7 @@ namespace Tpv.Ui.View
 
             if (resp != null && String.IsNullOrEmpty(resp.Status) == false)
             {
-                if (!resp.Status.Contains(ConfigurationManager.AppSettings["ValidationOkString"]))
+                if (resp.Status.Contains(ConfigurationManager.AppSettings["ValidationOkString"]))
                 {
                     MainWnd.Dispatcher.Invoke(new Action(() => SelectModifiers(iCode, barCode)));
                     Log.Info(String.Format("Promoción aplicable para el código de barras: {0}. | Respuesta: {1}", barCode, resp.Status));
