@@ -20,14 +20,14 @@ namespace Tpv.Ui.Service
                 Name = SharedConstants.BUTTON_GROUP_MODIFIER + groupModifier.Id,
                 BorderBrush = null,
                 Foreground = Brushes.White,
-                Height = 50,
-                Width = 170,
+                Height = 42,
+                Width = 132,
                 Background = new ImageBrush(new BitmapImage(new Uri(URI_RESOURCE + "ButtonGrpMod.jpg"))),
                 Content = new TextBlock
                 {
                     FontWeight = FontWeights.Bold,
                     FontFamily = new FontFamily("Franklin Gothic Medium"),
-                    FontSize = 18,
+                    FontSize = 15,
                     Text = groupModifier.Name
                 },
                 IsDefault = i == 0,
@@ -49,18 +49,20 @@ namespace Tpv.Ui.Service
                 TextAlignment = TextAlignment.Center,
                 FontWeight = FontWeights.Bold,
                 FontFamily = new FontFamily("Franklin Gothic Medium"),
-                FontSize = 18,
+                FontSize = 12,
                 Foreground = new SolidColorBrush(Color.FromRgb(12, 58, 214)),
-                Margin = new Thickness(4, 4, 4, -4),
+                //Margin = new Thickness(4, 4, 4, -4),
                 Text = modifier.Name
             });
 
             grid.Children.Add(new TextBlock
             {
                 TextWrapping = TextWrapping.Wrap,
-                TextAlignment = TextAlignment.Center,
+                TextAlignment = TextAlignment.Right,
                 Foreground = new SolidColorBrush(Color.FromRgb(12, 58, 214)),
-                Margin = new Thickness(127, 32, 4, -2),
+                FontFamily = new FontFamily("Franklin Gothic Medium"),
+                FontSize = 11.3,
+                Margin = new Thickness(10, 28, 0, -2),
                 Text = modifier.PriceTxt
             });
 
@@ -70,8 +72,8 @@ namespace Tpv.Ui.Service
                 Name = SharedConstants.BUTTON_MODIFIER + modifier.Id,
                 BorderBrush = null,
                 Foreground = new SolidColorBrush(Color.FromRgb(12, 58, 214)),
-                Height = 68,
-                Width = 170,
+                Height = 70,
+                Width = 132,
                 Background = new ImageBrush(new BitmapImage(new Uri(URI_RESOURCE + "Button.jpg"))),
                 Content = grid,
                 Tag = modifier

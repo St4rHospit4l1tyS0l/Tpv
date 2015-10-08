@@ -15,7 +15,7 @@ namespace Tpv.Aloha.BsLogic
             get
             {
                 string value;
-                if (DbReader.DIC_CONFIG.TryGetValue(Constants.PATH_FILE_LOGGER, out value))
+                if (DbReader.DicConfig.TryGetValue(Constants.PATH_FILE_LOGGER, out value))
                     return value;
                 return FILE_PATH;
             }

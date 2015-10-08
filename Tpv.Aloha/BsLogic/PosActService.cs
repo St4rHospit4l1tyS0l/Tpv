@@ -50,7 +50,7 @@ namespace Tpv.Aloha.BsLogic
 
         private void ProcessItemIfPromo(int idItem, string itemName, double price, int iCheckId)
         {
-            if (DbReader.DIC_PROMOS.ContainsKey(idItem) == false)
+            if (DbReader.DicPromos.ContainsKey(idItem) == false)
                 return;
 
             Logger.Write(String.Format("INFO - Cheque {0}, PromoId: {1}, PromoName: {2}, Precio: {3}", iCheckId, idItem, itemName, price));
@@ -150,7 +150,7 @@ namespace Tpv.Aloha.BsLogic
             var promoFile = DbReader.PromoFile;
             if (File.Exists(promoFile) == false)
             {
-                Logger.Write("ERROR - No existe el archivo de promociones para enviar el codigo correspondiente");
+                Logger.Write(String.Format("ERROR - No existe el archivo {0} de promociones para enviar el codigo correspondiente", promoFile));
                 return null;
             }
 
@@ -228,10 +228,11 @@ namespace Tpv.Aloha.BsLogic
         public void CloseCheck(int iemployeeId, int iqueueId, int itableId, int icheckId)
         {
             var fileName = Path.Combine(Environment.CurrentDirectory, Constants.FILE_NAME_CONFIG);
-            if (DbReader.ReadDictionaryFromFile(fileName) == false){
-                Logger.Write("No existe el archivo de configuración  del TPV o no se pudo leer de forma correcta");
-                MessageBox.Show(String.Format("No existe el archivo de configuración {0} del TPV o no se pudo leer de forma correcta", 
-                    fileName));
+            if (DbReader.ReadDictionaryFromFile(fileName) == false)
+            {
+                var msg = String.Format("No existe el archivo de configuración {0} del TPV o no se pudo leer de forma correcta",fileName);
+                Logger.Write(msg);
+                MessageBox.Show(msg);
             }
             
             GetInternalItems(icheckId);               

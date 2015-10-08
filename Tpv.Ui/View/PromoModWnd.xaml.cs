@@ -71,6 +71,9 @@ namespace Tpv.Ui.View
                 {
                     InsertItemTicket(ticket);
                 }
+
+                if ((lstItem.Count + 1) < _selectedGrpModifer.MinimumVal)
+                    return;
             }
             else
             {
@@ -143,10 +146,10 @@ namespace Tpv.Ui.View
                 Text = ticket.NameFull,
                 //Foreground = new SolidColorBrush(Color.FromRgb(51, 204, 255)),
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                Margin = new Thickness(5, 0, 1, 0),
+                Margin = new Thickness(3.5, 0, 1, 0),
                 FontFamily = new FontFamily("Batang"),
-                FontSize = 16,
-                Width = 220
+                FontSize = 14,
+                Width = 171
             };
 
             var txtPrice = new TextBlock
@@ -157,8 +160,8 @@ namespace Tpv.Ui.View
                 TextAlignment = TextAlignment.Right,
                 Margin = new Thickness(1, 0, 0, 0),
                 FontFamily = new FontFamily("Batang"),
-                FontSize = 16,
-                Width = 50
+                FontSize = 14,
+                Width = 39
             };
 
             var stPanel = new StackPanel
@@ -438,7 +441,7 @@ namespace Tpv.Ui.View
                             {
                                 Id = itemId,
                                 Name = item.GetStringVal("LONGNAME"),
-                                Price = item.GetStringVal("PRICE"),
+                                Price = item.GetDoubleVal("PRICE").ToString(),
                                 GroupModifier = groupModifier
                             });
                         }

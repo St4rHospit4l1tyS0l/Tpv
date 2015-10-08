@@ -8,15 +8,15 @@ namespace Tpv.Aloha.Infrastructure.Connector
 {
     public static class DbReader
     {
-        public static Dictionary<int, string> DIC_PROMOS = new Dictionary<int, string>();
-        public static Dictionary<string, string> DIC_CONFIG = new Dictionary<string, string>();
+        public static Dictionary<int, string> DicPromos = new Dictionary<int, string>();
+        public static Dictionary<string, string> DicConfig = new Dictionary<string, string>();
 
         public static string PromoFile
         {
             get
             {
                 string file;
-                return DIC_CONFIG.TryGetValue(Constants.PROMO_FILE, out file) ? file : "MsgPromoFile.tpv";
+                return DicConfig.TryGetValue(Constants.PROMO_FILE, out file) ? file : "MsgPromoFile.tpv";
             }
         }
 
@@ -25,18 +25,18 @@ namespace Tpv.Aloha.Infrastructure.Connector
             get
             {
                 string value;
-                return DIC_CONFIG.TryGetValue(Constants.URL_TO_DELETE, out value) ? value : "http://dunkin.rkpeople.com/developer/dunkin_ws/public/validar-codigo-barra/{0}&1";
+                return DicConfig.TryGetValue(Constants.URL_TO_DELETE, out value) ? value : "http://dunkin.rkpeople.com/developer/dunkin_ws/public/validar-codigo-barra/{0}&1";
             }
         }
 
 
         public static bool ReadDictionaryFromFile(string file)
         {
-            if (DIC_CONFIG.Count > 0)
+            if (DicConfig.Count > 0)
                 return true;
 
-            DIC_PROMOS = new Dictionary<int, string>();
-            DIC_CONFIG = new Dictionary<string, string>();
+            DicPromos = new Dictionary<int, string>();
+            DicConfig = new Dictionary<string, string>();
 
             if (!File.Exists(file)){
                 Logger.Write(String.Format("El archivo '{0}' con las promociones no existe", file));
@@ -64,11 +64,11 @@ namespace Tpv.Aloha.Infrastructure.Connector
 
                     if (int.TryParse(keyVal[0], out iVal))
                     {
-                        DIC_PROMOS.Add(iVal, keyVal[1]);
+                        DicPromos.Add(iVal, keyVal[1]);
                     }
                     else
                     {
-                        DIC_CONFIG.Add(keyVal[0], keyVal[1]);                        
+                        DicConfig.Add(keyVal[0], keyVal[1]);                        
                     }
 
                 }
@@ -79,7 +79,7 @@ namespace Tpv.Aloha.Infrastructure.Connector
                 }
             }
 
-            if (DIC_PROMOS.Count != 0)
+            if (DicPromos.Count != 0)
                 return true;
             
             Logger.Write("No se encontró alguna promoción en el archivo");
