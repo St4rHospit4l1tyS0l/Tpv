@@ -167,8 +167,8 @@ namespace Tpv.Ui.View
                     ErrorStPan.Visibility = Visibility.Visible;
                     ErrorTxt.Text = "No hubo respuesta por parte del servidor";
                     SearchBtn.IsEnabled = true;
+                    Log.Info(String.Format("Código de barras: {0} no válido. | Respuesta: {1}", barCode, ErrorTxt.Text));
                 }));
-                Log.Info(String.Format("Código de barras: {0} no válido. | Respuesta: {1}", barCode, ErrorTxt.Text));
             }
 
             MainWnd.Dispatcher.Invoke(new Action(() =>
