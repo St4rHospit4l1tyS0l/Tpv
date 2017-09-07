@@ -103,7 +103,7 @@
     <ManifestKeyFile>Tpv.Ui_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
+    <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>false</SignManifests>
@@ -114,6 +114,12 @@
   <PropertyGroup />
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="LasaFOHLib67">
@@ -128,6 +134,10 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Threading, Version=1.0.2856.102, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\TaskParallelLibrary.1.0.2856.0\lib\Net35\System.Threading.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -142,16 +152,26 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\Constants.cs" />
+    <Compile Include="Model\GlobalParams.cs" />
     <Compile Include="Model\ItemGroupModifier.cs" />
     <Compile Include="Model\ItemModifier.cs" />
     <Compile Include="Model\ItemTicket.cs" />
     <Compile Include="Model\ModCode.cs" />
+    <Compile Include="Model\OperationMode.cs" />
+    <Compile Include="Service\MessageExt.cs" />
     <Compile Include="Service\FactoryButton.cs" />
+    <Compile Include="Service\IniEnvReaderService.cs" />
+    <Compile Include="Service\LoyaltyService.cs" />
+    <Compile Include="Model\PosCheckModel.cs" />
+    <Compile Include="Service\UrlRestFactory.cs" />
+    <Compile Include="Model\MainAppOperations.cs" />
     <Compile Include="View\MsgWnd.xaml.cs">
       <DependentUpon>MsgWnd.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\PromoCheckFile.cs" />
     <Compile Include="Model\PromoItemFile.cs" />
+    <Compile Include="Model\OperationModel.cs" />
     <Compile Include="View\PromoModWnd.xaml.cs">
       <DependentUpon>PromoModWnd.xaml</DependentUpon>
     </Compile>
@@ -203,6 +223,7 @@
     </EmbeddedResource>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

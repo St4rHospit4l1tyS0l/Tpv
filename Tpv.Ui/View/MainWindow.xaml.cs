@@ -1,14 +1,15 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using System.Windows;
 using System.Windows.Input;
-using log4net;
 using Tpv.Ui.Model;
 using Tpv.Ui.Repository;
 using Tpv.Ui.Service;
@@ -20,15 +21,24 @@ namespace Tpv.Ui.View
     /// </summary>
     public partial class MainWindow
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(MainWindow));
+        private static readonly ILog _log = LogManager.GetLogger(typeof(MainWindow));
         private string _lastBarCode;
-        //private readonly PosService _posService;
+
+        private readonly Dictionary<OperationMode, OperationModel> _dicOperations
+            = new Dictionary<OperationMode, OperationModel>
+        {
+            {OperationMode.ApplyCoupon, new OperationModel {Title = "Aplicar canjeo de cupón", Operation = ApplyCoupon}},
+            {OperationMode.Loyalty, new OperationModel {Title = "Aplicar puntos de lealtad", Operation = LoyaltyService.ApplyLoyalty}},
+            {OperationMode.Transaction, new OperationModel {Title = "Aplicar canjeo de cupón", Operation = ApplyCoupon}}
+        };
+
+        private readonly OperationModel _operation;
 
         public MainWindow()
         {
-            //_posService = new PosService();
             InitializeComponent();
-            //RestService.MakeRequest("http://dunkin.rkpeople.com/developer/dunkin_ws/public/validar-codigo-barra/2100081941985&1");
+            _operation = _dicOperations[GlobalParams.Mode];
+            LblTitle.Content = _operation.Title;
         }
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
@@ -39,59 +49,63 @@ namespace Tpv.Ui.View
         private void SearchBtn_Click(object sender, RoutedEventArgs e)
         {
             _lastBarCode = TxtBarCode.Text;
-            TxtBarCode.Text = String.Empty;
+            TxtBarCode.Text = string.Empty;
+
             try
             {
-
-                if (String.IsNullOrEmpty(_lastBarCode) || _lastBarCode.Length <= SharedConstants.BAR_CODE_LEN)
+                if (string.IsNullOrEmpty(_lastBarCode) || _lastBarCode.Length <= SharedConstants.BAR_CODE_LEN)
                 {
                     ShowError("El código de barras es inválido");
                     return;
                 }
 
-                int iCode;
-                if (int.TryParse(_lastBarCode.Substring(0, SharedConstants.BAR_CODE_LEN), out iCode) == false)
+                _operation.Operation(_lastBarCode, new MainAppOperations
                 {
-                    ShowError("El código de barras no es válido");
-                    return;
-                }
-
-                if (Database.DicPromotions.Keys.Any(i => i == iCode) == false)
-                {
-                    ShowError("No existe la promoción en la tienda");
-                    return;
-                }
-
-                new Thread(() =>
-                {
-                    try
-                    {
-                        DisableControls();
-                        Log.Info("Validando el código de barras: " + _lastBarCode);
-
-                        var resp = RestService.MakeRequest(RestService.CreateRequestToValidate(_lastBarCode));
-
-                        ShowResponse(resp, iCode, _lastBarCode);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Error(String.Format("Error al validar el código de barras: {0} | Error: {1}", _lastBarCode, ex.Message));
-                        MainWnd.Dispatcher.Invoke(new Action(() =>
-                        {
-                            ErrorTxt.Text = ex.Message;
-                            ErrorStPan.Visibility = Visibility.Visible;
-                            ProgressStPan.Visibility = Visibility.Collapsed;
-                            SearchBtn.IsEnabled = true;
-                        }));
-                    }
-                }).Start();
+                    ShowError = ShowError,
+                    DisableControls = DisableControls,
+                    ShowResponse = ShowResponse,
+                    ClearAll = ClearAll,
+                    CloseAll = CloseAll
+                });
             }
             catch (Exception ex)
             {
-                Log.Error(String.Format("Error general al validar el código de barras: {0} | Error: {1}", _lastBarCode, ex.Message));
+                _log.Error($"Error general al validar el código de barras: {_lastBarCode} | Error: {ex.Message}");
                 ErrorTxt.Text = ex.Message;
                 ErrorStPan.Visibility = Visibility.Visible;
             }
+        }
+
+        private static void ApplyCoupon(string lastBarCode, MainAppOperations operations)
+        {
+            int iCode;
+            if (int.TryParse(lastBarCode.Substring(0, SharedConstants.BAR_CODE_LEN), out iCode) == false)
+            {
+                operations.ShowError("El código de barras no es válido");
+                return;
+            }
+
+            //if (Database.DicPromotions.Keys.Any(i => i == iCode) == false)
+            //{
+            //    operations.ShowError("No existe la promoción en la tienda");
+            //    return;
+            //}
+
+            Task.Factory.StartNew(() =>
+            {
+                try
+                {
+                    operations.DisableControls();
+                    _log.Info("Validando el código de barras: " + lastBarCode);
+                    //var resp = RestService.MakeRequest(RestService.CreateRequestToValidate(lastBarCode));
+                    //showResponse(resp, iCode, lastBarCode);
+                }
+                catch (Exception ex)
+                {
+                    _log.Error($"Error al validar el código de barras: {lastBarCode} | Error: {ex.Message}");
+                    operations.ShowError(ex.Message);
+                }
+            });
         }
 
         private void ShowError(string error)
@@ -127,27 +141,7 @@ namespace Tpv.Ui.View
                 if (resp.Status.Contains(ConfigurationManager.AppSettings["ValidationOkString"]))
                 {
                     MainWnd.Dispatcher.Invoke(new Action(() => SelectModifiers(iCode, barCode)));
-                    Log.Info(String.Format("Promoción aplicable para el código de barras: {0}. | Respuesta: {1}", barCode, resp.Status));
-
-                    //MainWnd.Dispatcher.Invoke(new Action(() =>
-                    //{
-                    //    SuccessStPan.Visibility = Visibility.Visible;
-                    //    SuccessTxt.Text = resp.Status;
-                    //    PromoStPan.Visibility = Visibility.Visible;
-                    //    PromoTxt.Text = Database.DicPromotions[iCode];
-                    //    TitlePromoTxt.Text = String.Format("Promoción aplicable al código {0}:", barCode);
-                    //    SearchBtn.IsEnabled = false;
-                    //    SelectModifiers(iCode, barCode);
-                    //}));
-                    //_posService.ApplyPromotion(iCode);
-                    //if (_posService.ApplyPromotion(iCode))
-                    //{
-                    //}
-                    //else
-                    //{
-                    //    //TODO
-                    //}
-
+                    _log.Info($"Promoción aplicable para el código de barras: {barCode}. | Respuesta: {resp.Status}");
                 }
                 else
                 {
@@ -157,7 +151,7 @@ namespace Tpv.Ui.View
                         ErrorTxt.Text = resp.Status;
                         SearchBtn.IsEnabled = true;
                     }));
-                    Log.Info(String.Format("Código de barras: {0} no válido. | Respuesta: {1}", barCode, resp.Status));
+                    _log.Info($"Código de barras: {barCode} no válido. | Respuesta: {resp.Status}");
                 }
             }
             else
@@ -167,7 +161,7 @@ namespace Tpv.Ui.View
                     ErrorStPan.Visibility = Visibility.Visible;
                     ErrorTxt.Text = "No hubo respuesta por parte del servidor";
                     SearchBtn.IsEnabled = true;
-                    Log.Info(String.Format("Código de barras: {0} no válido. | Respuesta: {1}", barCode, ErrorTxt.Text));
+                    _log.Info($"Código de barras: {barCode} no válido. | Respuesta: {ErrorTxt.Text}");
                 }));
             }
 
@@ -194,7 +188,6 @@ namespace Tpv.Ui.View
 
             //Ingresar los items a Aloha
             TryToAddItemsToAloha(dlg, barCode);
-            return;
         }
 
         private void TryToAddItemsToAloha(PromoModWnd dlg, string barCode)
@@ -235,7 +228,7 @@ namespace Tpv.Ui.View
         private void SaveFile(PromoCheckFile promo)
         {
             var iTries = 3;
-            
+
             while (iTries-- >= 0)
             {
                 try
@@ -263,7 +256,7 @@ namespace Tpv.Ui.View
                         }
                         catch (Exception ex1)
                         {
-                            Log.Error(String.Format("{0} | {1}", ex1.Message, ex1.StackTrace));
+                            _log.Error($"{ex1.Message} | {ex1.StackTrace}");
                             if (lstPromos.Count == 0)
                                 lstPromos.Add(promo);
                         }
@@ -279,8 +272,8 @@ namespace Tpv.Ui.View
                 }
                 catch (Exception ex2)
                 {
-                    Log.Error(String.Format("{0} | {1}", ex2.Message, ex2.StackTrace));
-                }            
+                    _log.Error($"{ex2.Message} | {ex2.StackTrace}");
+                }
             }
         }
 
@@ -312,17 +305,17 @@ namespace Tpv.Ui.View
 
                     if (((hresult >> 16) & 0x07ff) != 0x06) // this is not an Aloha COM Error
                     {
-                        Log.Error(ex.ToString());
+                        _log.Error(ex.ToString());
                         return false;
                     }
 
-                    Log.Error(string.Format("Aloha returned error code {0}", hresult & 0xFFF));
+                    _log.Error($"Aloha returned error code {hresult & 0xFFF}");
                     return false;
 
                 }
                 catch (Exception exIn)
                 {
-                    Log.Error(exIn.Message + " | " + exIn.StackTrace);
+                    _log.Error(exIn.Message + " | " + exIn.StackTrace);
                     return false;
                 }
             }
@@ -333,7 +326,7 @@ namespace Tpv.Ui.View
         {
             try
             {
-                Log.Info("INICIA baja de código de barras: " + _lastBarCode);
+                _log.Info("INICIA baja de código de barras: " + _lastBarCode);
 
                 new Thread(() =>
                 {
@@ -345,26 +338,26 @@ namespace Tpv.Ui.View
                             ApplyStPan.Visibility = Visibility.Visible;
                         }));
 
-                        var resp = RestService.MakeRequest(RestService.CreateRequestToDelete(_lastBarCode));
+                        //var resp = RestService.MakeRequest(RestService.CreateRequestToDelete(_lastBarCode));
 
-                        if (resp == null)
-                            throw new Exception("No se pudo establecer conexión con el servidor");
+                        //if (resp == null)
+                        //    throw new Exception("No se pudo establecer conexión con el servidor");
 
-                        var msg = String.Format("La eliminación del código de barras '{0}' se realizó de forma exitosa. Estatus: {1}", _lastBarCode, resp.Status);
+                        //var msg = $"La eliminación del código de barras '{_lastBarCode}' se realizó de forma exitosa. Estatus: {resp.Status}";
 
-                        Log.Info(msg);
-                        Log.Info(" ******" + resp.Status + "******");
-                        MainWnd.Dispatcher.Invoke(new Action(() =>
-                        {
-                            MessageBox.Show(msg, "TPV", MessageBoxButton.OK, MessageBoxImage.Information);
-                            Application.Current.Shutdown();
-                        }));
+                        //_log.Info(msg);
+                        //_log.Info(" ******" + resp.Status + "******");
+                        //MainWnd.Dispatcher.Invoke(new Action(() =>
+                        //{
+                        //    MessageBox.Show(msg, "TPV", MessageBoxButton.OK, MessageBoxImage.Information);
+                        //    Application.Current.Shutdown();
+                        //}));
 
                         ClearAll();
                     }
                     catch (Exception ex)
                     {
-                        Log.Error(String.Format("Error al aplicar el código de barras: {0} | Error: {1}", _lastBarCode, ex.Message));
+                        _log.Error($"Error al aplicar el código de barras: {_lastBarCode} | Error: {ex.Message}");
                         MainWnd.Dispatcher.Invoke(new Action(() =>
                         {
                             MessageBox.Show("No fue posible conectarse al servidor. Por favor presione el botón 'Aplicar promoción' para intentar de nuevo.", "TPV", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -376,7 +369,7 @@ namespace Tpv.Ui.View
             }
             catch (Exception ex)
             {
-                Log.Error(String.Format("Error general al aplicar el código de barras: {0} | Error: {1}", _lastBarCode, ex.Message));
+                _log.Error($"Error general al aplicar el código de barras: {_lastBarCode} | Error: {ex.Message}");
                 ErrorTxt.Text = ex.Message;
                 ErrorStPan.Visibility = Visibility.Visible;
             }
@@ -404,7 +397,12 @@ namespace Tpv.Ui.View
 
         private void Close(object sender, MouseEventArgs e)
         {
-            Close();
+            CloseAll();
+        }
+
+        private void CloseAll()
+        {
+            MainWnd.Dispatcher.Invoke(new Action(Close));
         }
 
         private void Minimize(object sender, MouseButtonEventArgs e)
