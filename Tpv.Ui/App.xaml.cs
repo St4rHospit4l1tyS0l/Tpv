@@ -1,12 +1,9 @@
 ﻿using log4net;
 using log4net.Config;
 using System;
-using System.Configuration;
 using System.Windows;
 using System.Windows.Threading;
-using Tpv.Ui.Infrastructure.Connector;
 using Tpv.Ui.Model;
-using Tpv.Ui.Repository;
 
 namespace Tpv.Ui
 {
@@ -23,18 +20,17 @@ namespace Tpv.Ui
 
             GlobalParams.ProcessArguments(e.Args);
 
-            var response = new ResponseMessage();
-            Database.DicPromotions = DbReader.ReadDictionaryFromFile(ConfigurationManager.AppSettings["DatabaseFile"], response);
+            //var response = new ResponseMessage();
+            //Database.DicPromotions = DbReader.ReadDictionaryFromFile(ConfigurationManager.AppSettings["DatabaseFile"], response);
 
-            if (response.IsSuccess)
-            {
-                _log.Info("Catálogo cargado de forma correcta");
-                return;
-            }
-
-            _log.Error(response.Message);
-            MessageBox.Show(response.Message, "TPV", MessageBoxButton.OK, MessageBoxImage.Error);
-            Shutdown(0);
+            //if (response.IsSuccess)
+            //{
+            //    _log.Info("Catálogo cargado de forma correcta");
+            //    return;
+            //}
+            //_log.Error(response.Message);
+            //MessageBox.Show(response.Message, "TPV", MessageBoxButton.OK, MessageBoxImage.Error);
+            //Shutdown(0);
         }
 
         private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs args)

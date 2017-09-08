@@ -1,6 +1,7 @@
 ﻿using log4net;
 using System;
 using System.Net;
+using System.Runtime.Serialization.Json;
 using System.Text;
 using Tpv.Ui.Model;
 
@@ -76,6 +77,59 @@ namespace Tpv.Ui.Service
                     return $"Error no definido ({responseStatusCode})";
             }
         }
+
+
+        public static bool CallApplyCouponGetService(string requestUrl, PosCheckModel model)
+        {
+            try
+            {
+                var request = (HttpWebRequest)WebRequest.Create(requestUrl);
+                request.Method = "GET";
+                request.KeepAlive = false;
+                request.Accept = "application/json";
+
+                try
+                {
+                    using (var response = (HttpWebResponse)request.GetResponse())
+                    {
+                        if (response.StatusCode != HttpStatusCode.OK)
+                        {
+                            _log.Error($"Parámetros empleados que generan el error: {requestUrl}");
+                            MessageExt.ShowErrorMessage($"No fue posible aplicar esta operación: {GetReadableMessageByCode(response.StatusCode)}");
+                            return false;
+                        }
+
+                        var jsonSerializer = new DataContractJsonSerializer(typeof(ResponseCouponModel));
+                        var respStream = response.GetResponseStream();
+
+                        if (respStream == null)
+                        {
+                            _log.Error($"Parámetros empleados que generan el error: {requestUrl}");
+                            MessageExt.ShowErrorMessage($"No se recibió respuesta a la operación.");
+                            return false;
+                        }
+
+                        var objResponse = jsonSerializer.ReadObject(respStream);
+                        model.Response = objResponse as ResponseCouponModel;
+                        return true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _log.Error(ex.Message + " | " + ex.StackTrace);
+                    _log.Error($"Parámetros empleados que generan el error: {requestUrl}");
+                    MessageExt.ShowErrorMessage($"No fue posible aplicar puntos de lealtad. Revise que el código del cliente sea correcto, que tenga un pedido activo, o que tenga conexión a Internet. ERROR: {ex.Message}");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message + " | " + ex.StackTrace);
+                MessageExt.ShowErrorMessage($"No fue posible hacer la petición al servidor, revise que tenga Internet, que el servicio esté activo. ERROR: {ex.Message}");
+                return false;
+            }
+        }
+
     }
 
 

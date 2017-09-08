@@ -10,8 +10,9 @@ namespace Tpv.Ui.Model
 
         [DataMember(Name = "_links")]
         public Links Links { get; set; }
-        
+
     }
+
 
     [DataContract]
     public class Links

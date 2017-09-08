@@ -13,6 +13,8 @@ namespace Tpv.Ui.Model
         public string Shop { get; set; }
         public string Tpv { get; set; }
         public int ReadableCheckId { get; set; }
+        public string BarCode { get; set; }
+        public ResponseCouponModel Response { get; set; }
         public string PostData => new JavaScriptSerializer().Serialize(new
         {
             code = ClientCode,
@@ -23,5 +25,6 @@ namespace Tpv.Ui.Model
             pvpPromo = PvpPromo,
             fxOper = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond
         });
+
     }
 }

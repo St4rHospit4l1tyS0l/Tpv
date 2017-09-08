@@ -1,4 +1,5 @@
 ﻿using System.Configuration;
+using Tpv.Ui.Model;
 
 namespace Tpv.Ui.Service
 {
@@ -6,12 +7,15 @@ namespace Tpv.Ui.Service
     {
         public static string GetUrlLoyalty()
         {
-            return BuildUrl("UrlLoyalty");
+            return string.Format(ConfigurationManager.AppSettings["UrlLoyalty"], ConfigurationManager.AppSettings["Domain"]);
         }
-
-        private static string BuildUrl(string urlKey, params string[] urlParams)
+        public static string GetUrlResume(PosCheckModel model)
         {
-            return string.Format(ConfigurationManager.AppSettings[urlKey], ConfigurationManager.AppSettings["Domain"], urlParams);
+            return string.Format(ConfigurationManager.AppSettings["UrlResume"], ConfigurationManager.AppSettings["Domain"], model.BarCode, model.Tpv, model.Shop);
+        }
+        public static string GetUrlValidate(PosCheckModel model)
+        {
+            return string.Format(ConfigurationManager.AppSettings["UrlValidate"], ConfigurationManager.AppSettings["Domain"], model.BarCode, model.Tpv, model.Shop);
         }
     }
 }

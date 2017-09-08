@@ -159,6 +159,8 @@
     <Compile Include="Model\ItemTicket.cs" />
     <Compile Include="Model\ModCode.cs" />
     <Compile Include="Model\OperationMode.cs" />
+    <Compile Include="Model\ResponseCouponModel.cs" />
+    <Compile Include="Service\CouponService.cs" />
     <Compile Include="Service\MessageExt.cs" />
     <Compile Include="Service\FactoryButton.cs" />
     <Compile Include="Service\IniEnvReaderService.cs" />

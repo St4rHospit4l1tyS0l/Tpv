@@ -6,12 +6,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using System.Windows;
 using System.Windows.Input;
 using Tpv.Ui.Model;
-using Tpv.Ui.Repository;
 using Tpv.Ui.Service;
 
 namespace Tpv.Ui.View
@@ -27,9 +25,9 @@ namespace Tpv.Ui.View
         private readonly Dictionary<OperationMode, OperationModel> _dicOperations
             = new Dictionary<OperationMode, OperationModel>
         {
-            {OperationMode.ApplyCoupon, new OperationModel {Title = "Aplicar canjeo de cupón", Operation = ApplyCoupon}},
+            {OperationMode.ApplyCoupon, new OperationModel {Title = "Aplicar canjeo de cupón", Operation = CouponService.ApplyCoupon}},
             {OperationMode.Loyalty, new OperationModel {Title = "Aplicar puntos de lealtad", Operation = LoyaltyService.ApplyLoyalty}},
-            {OperationMode.Transaction, new OperationModel {Title = "Aplicar canjeo de cupón", Operation = ApplyCoupon}}
+            {OperationMode.Transaction, new OperationModel {Title = "Aplicar canjeo de cupón", Operation = CouponService.ApplyCoupon}}
         };
 
         private readonly OperationModel _operation;
@@ -76,38 +74,6 @@ namespace Tpv.Ui.View
             }
         }
 
-        private static void ApplyCoupon(string lastBarCode, MainAppOperations operations)
-        {
-            int iCode;
-            if (int.TryParse(lastBarCode.Substring(0, SharedConstants.BAR_CODE_LEN), out iCode) == false)
-            {
-                operations.ShowError("El código de barras no es válido");
-                return;
-            }
-
-            //if (Database.DicPromotions.Keys.Any(i => i == iCode) == false)
-            //{
-            //    operations.ShowError("No existe la promoción en la tienda");
-            //    return;
-            //}
-
-            Task.Factory.StartNew(() =>
-            {
-                try
-                {
-                    operations.DisableControls();
-                    _log.Info("Validando el código de barras: " + lastBarCode);
-                    //var resp = RestService.MakeRequest(RestService.CreateRequestToValidate(lastBarCode));
-                    //showResponse(resp, iCode, lastBarCode);
-                }
-                catch (Exception ex)
-                {
-                    _log.Error($"Error al validar el código de barras: {lastBarCode} | Error: {ex.Message}");
-                    operations.ShowError(ex.Message);
-                }
-            });
-        }
-
         private void ShowError(string error)
         {
             ErrorTxt.Text = error;
@@ -128,17 +94,16 @@ namespace Tpv.Ui.View
                 ProgressStPan.Visibility = Visibility.Visible;
                 SearchBtn.IsEnabled = false;
                 PromoStPan.Visibility = Visibility.Collapsed;
-                PromoTxt.Text = String.Empty;
-                TitlePromoTxt.Text = String.Empty;
+                PromoTxt.Text = string.Empty;
+                TitlePromoTxt.Text = string.Empty;
             }));
         }
 
-        private void ShowResponse(ResponseValidationModel resp, int iCode, string barCode)
+        private void ShowResponse(ResponseCouponModel resp, int iCode, string barCode)
         {
-
-            if (resp != null && String.IsNullOrEmpty(resp.Status) == false)
+            if (resp != null && string.IsNullOrEmpty(resp.Status) == false)
             {
-                if (resp.Status.Contains(ConfigurationManager.AppSettings["ValidationOkString"]))
+                if (resp.Estado == Constants.RESPONSE_OK)
                 {
                     MainWnd.Dispatcher.Invoke(new Action(() => SelectModifiers(iCode, barCode)));
                     _log.Info($"Promoción aplicable para el código de barras: {barCode}. | Respuesta: {resp.Status}");
@@ -178,7 +143,7 @@ namespace Tpv.Ui.View
             {
                 Owner = this,
                 CodeGroupModifier = iCode,
-                NameGroupModifier = Database.DicPromotions[iCode]
+                NameGroupModifier = "ND"//Database.DicPromotions[iCode]
             };
 
             var response = dlg.ShowDialog();
