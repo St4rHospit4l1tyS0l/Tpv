@@ -11,8 +11,27 @@ namespace Tpv.Ui.Model
         [DataMember(Name = "estado")]
         public int Estado { get; set; }
 
-        [DataMember(Name = "code")]
+        [DataMember(Name = "codigo")]
         public string Code { get; set; }
 
+        [DataMember(Name = "nombre")]
+        public string Name { get; set; }
+
+        [DataMember(Name = "importe")]
+        public string Amount { get; set; }
+
+        public int PromotionCode { get; private set; }
+
+        public bool GetCode()
+        {
+            int promotionCode;
+            if (int.TryParse(Code, out promotionCode))
+            {
+                PromotionCode = promotionCode;
+                return true;
+            }
+
+            return false;
+        }
     }
 }

@@ -6,7 +6,7 @@ namespace Tpv.Ui.Model
     {
         public Action<string> ShowError { get; set; }
         public Action DisableControls { get; set; }
-        public Action<ResponseCouponModel, int, string> ShowResponse { get; set; }
+        public Action<ResponseCouponModel, string> ShowResponse { get; set; }
         public Action ClearAll { get; set; }
         public Action CloseAll { get; set; }
     }

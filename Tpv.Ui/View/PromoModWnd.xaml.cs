@@ -1,11 +1,11 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using log4net;
 using Tpv.Ui.Model;
 using Tpv.Ui.Service;
 
@@ -16,8 +16,9 @@ namespace Tpv.Ui.View
     /// </summary>
     public partial class PromoModWnd
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(PromoModWnd));
+        private static readonly ILog _log = LogManager.GetLogger(typeof(PromoModWnd));
 
+        public bool IsReady { get; set; }
         public int TermId { get; set; }
         public int CheckId { get; set; }
         public int CodeGroupModifier { get; set; }
@@ -32,14 +33,18 @@ namespace Tpv.Ui.View
 
         private int _selectedModCode = NORMAL_MOD;
 
-        public PromoModWnd()
+        public PromoModWnd(Window owner, int codeGroupModifier, string nameGroupModifier)
         {
+            Owner = owner;
+            CodeGroupModifier = codeGroupModifier;
+            NameGroupModifier = nameGroupModifier;
             InitializeComponent();
+            IsReady = false;
+            InitModifierGroup();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            InitModifierGroup();
         }
 
         private void InitModifierGroup()
@@ -55,12 +60,12 @@ namespace Tpv.Ui.View
         }
 
         private void SetItemList(ItemTicket ticket)
-        {            
+        {
             if (!ticket.IsMain)
             {
                 ticket.ModCode = _selectedModCode;
                 _selectedModCode = NORMAL_MOD;
- 
+
                 var lstItem = GetTicketItems().Where(e => e.ItemModifier.GroupModifier == _selectedGrpModifer).ToList();
                 if (lstItem.Count >= _selectedGrpModifer.MaximumVal)
                 {
@@ -114,7 +119,8 @@ namespace Tpv.Ui.View
         private void UpdateLastItemTicket(ItemTicket ticket, ItemTicket ticketOld)
         {
 
-            var stPanelFull = StPnTicket.Children.OfType<StackPanel>().Select(e => new{
+            var stPanelFull = StPnTicket.Children.OfType<StackPanel>().Select(e => new
+            {
                 item = e.Tag as ItemTicket,
                 stPanel = e
             }).FirstOrDefault(e => e.item != null && e.item == ticketOld);
@@ -252,13 +258,13 @@ namespace Tpv.Ui.View
                         {
                             // get the current employee
                             LasaFOHLib67.IIberObject emp = localState.GetEnum(723).First();
-                            Console.WriteLine("Empleado: {0} {1}", emp.GetStringVal("FIRSTNAME"), emp.GetStringVal("LASTNAME"));
+                            Console.WriteLine(@"Empleado: {0} {1}", emp.GetStringVal("FIRSTNAME"), emp.GetStringVal("LASTNAME"));
                         }
                         catch (Exception ex)
                         {
-                            Log.Error(ex.Message + " | " + ex.StackTrace);
-                            MessageBox.Show("Verifique que exista un usuario con sesión iniciada en Aloha.", "TPV error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                            Close();
+                            _log.Error(ex.Message + " | " + ex.StackTrace);
+                            MessageExt.ShowErrorMessage("Verifique que exista un usuario con sesión iniciada en Aloha.");
+                            return;
                         }
 
                         TermId = localState.GetLongVal("TERMINAL_NUM");
@@ -266,9 +272,9 @@ namespace Tpv.Ui.View
                     }
                     catch (Exception ex)
                     {
-                        Log.Error(ex.Message + " | " + ex.StackTrace);
-                        MessageBox.Show("Verifique que exista un ticket activo.", "TPV error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                        Close();
+                        _log.Error(ex.Message + " | " + ex.StackTrace);
+                        MessageExt.ShowErrorMessage("Verifique que exista un ticket activo.");
+                        return;
                     }
 
                     depot = new LasaFOHLib67.IberDepotClass();
@@ -276,16 +282,17 @@ namespace Tpv.Ui.View
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex.Message + " | " + ex.StackTrace);
-                    MessageBox.Show("Aloha no se está ejecutando o no existe un ticket activo.", "TPV error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                    Close();
+                    _log.Error(ex.Message + " | " + ex.StackTrace);
+                    MessageExt.ShowErrorMessage("Aloha no se está ejecutando o no existe un ticket activo.");
                     return;
                 }
+
+                IsReady = true;
 
                 var modgrpIds = new List<int>();
                 for (var x = 1; x <= 10; x++)
                 {
-                    var id = parent.GetLongVal(string.Format("MOD{0}", x));
+                    var id = parent.GetLongVal($"MOD{x}");
                     if (id > 0)
                         modgrpIds.Add(id);
                 }
@@ -600,7 +607,7 @@ namespace Tpv.Ui.View
 
             int iVal;
 
-            if (int.TryParse((string) button.Tag, out iVal) == false)
+            if (int.TryParse((string)button.Tag, out iVal) == false)
                 return;
 
             _selectedModCode = iVal;

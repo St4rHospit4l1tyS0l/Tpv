@@ -99,13 +99,13 @@ namespace Tpv.Ui.View
             }));
         }
 
-        private void ShowResponse(ResponseCouponModel resp, int iCode, string barCode)
+        private void ShowResponse(ResponseCouponModel resp, string barCode)
         {
             if (resp != null && string.IsNullOrEmpty(resp.Status) == false)
             {
                 if (resp.Estado == Constants.RESPONSE_OK)
                 {
-                    MainWnd.Dispatcher.Invoke(new Action(() => SelectModifiers(iCode, barCode)));
+                    MainWnd.Dispatcher.Invoke(new Action(() => SelectModifiers(resp, barCode)));
                     _log.Info($"Promoción aplicable para el código de barras: {barCode}. | Respuesta: {resp.Status}");
                 }
                 else
@@ -137,14 +137,17 @@ namespace Tpv.Ui.View
             }));
         }
 
-        private void SelectModifiers(int iCode, string barCode)
+        private void SelectModifiers(ResponseCouponModel resp, string barCode)
         {
             var dlg = new PromoModWnd
-            {
-                Owner = this,
-                CodeGroupModifier = iCode,
-                NameGroupModifier = "ND"//Database.DicPromotions[iCode]
-            };
+            (
+                this,
+                resp.PromotionCode,
+                $"{resp.Name} {resp.Amount}"//Database.DicPromotions[iCode]
+            );
+
+            if (!dlg.IsReady)
+                return;
 
             var response = dlg.ShowDialog();
 

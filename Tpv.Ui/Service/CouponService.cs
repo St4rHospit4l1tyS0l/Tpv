@@ -44,13 +44,19 @@ namespace Tpv.Ui.Service
                     if (!RestService.CallApplyCouponGetService(urlValidate, model))
                         return;
 
+                    if (!model.Response.GetCode())
+                    {
+                        MessageExt.ShowErrorMessage($"Código de promoción inválido: {model.Response.Code}");
+                        return;
+                    }
+
                     if (model.Response.Estado == Constants.RESPONSE_ERROR)
                     {
                         MessageExt.ShowErrorMessage($"El cupón no se pudo canjear debido a: {model.Response.Status}");
                         return;
                     }
 
-                    operations.ShowResponse(model.Response, iCode, barCode);
+                    operations.ShowResponse(model.Response, barCode);
                 }
                 catch (Exception ex)
                 {
