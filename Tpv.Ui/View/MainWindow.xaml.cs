@@ -2,12 +2,8 @@
 using log4net;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
-using System.Web.Script.Serialization;
 using System.Windows;
 using System.Windows.Input;
 using Tpv.Ui.Model;
@@ -106,7 +102,7 @@ namespace Tpv.Ui.View
             {
                 if (resp.Estado == Constants.RESPONSE_OK)
                 {
-                    MainWnd.Dispatcher.Invoke(new Action(() => SelectModifiers(resp, barCode)));
+                    MainWnd.Dispatcher.Invoke(new Action(() => SelectModifiers(resp)));
                     _log.Info($"Promoción aplicable para el código de barras: {barCode}. | Respuesta: {resp.Status}");
                 }
                 else
@@ -138,7 +134,7 @@ namespace Tpv.Ui.View
             }));
         }
 
-        private void SelectModifiers(ResponseCouponModel resp, string barCode)
+        private void SelectModifiers(ResponseCouponModel resp)
         {
             var dlg = new PromoModWnd
             (
@@ -156,10 +152,10 @@ namespace Tpv.Ui.View
                 return;
 
             //Ingresar los items a Aloha
-            TryToAddItemsToAloha(dlg, barCode);
+            TryToAddItemsToAloha(dlg);
         }
 
-        private void TryToAddItemsToAloha(PromoModWnd dlg, string barCode)
+        private void TryToAddItemsToAloha(PromoModWnd dlg)
         {
             var iTries = 3;
             do
@@ -175,76 +171,76 @@ namespace Tpv.Ui.View
             } while (iTries-- > 0);
         }
 
-        private void AddPromoToFile(PromoModWnd dlg, string barCode)
-        {
-            var promo = new PromoCheckFile
-            {
-                CheckId = dlg.CheckId,
-                LstPromo = new List<PromoItemFile>{
-                    new PromoItemFile
-                    {
-                        PromoId = dlg.CodeGroupModifier,
-                        BarCode = barCode,
-                        DateTx = DateTime.Now.ToString("yy/MM/dd")
-                    }
-                }
-            };
+        //private void AddPromoToFile(PromoModWnd dlg, string barCode)
+        //{
+        //    var promo = new PromoCheckFile
+        //    {
+        //        CheckId = dlg.CheckId,
+        //        LstPromo = new List<PromoItemFile>{
+        //            new PromoItemFile
+        //            {
+        //                PromoId = dlg.CodeGroupModifier,
+        //                BarCode = barCode,
+        //                DateTx = DateTime.Now.ToString("yy/MM/dd")
+        //            }
+        //        }
+        //    };
 
-            SaveFile(promo);
+        //    SaveFile(promo);
 
-        }
+        //}
 
-        private void SaveFile(PromoCheckFile promo)
-        {
-            var iTries = 3;
+        //private void SaveFile(PromoCheckFile promo)
+        //{
+        //    var iTries = 3;
 
-            while (iTries-- >= 0)
-            {
-                try
-                {
-                    var lstPromos = new List<PromoCheckFile>();
-                    var file = ConfigurationManager.AppSettings["MsgPromoFile"];
-                    if (File.Exists(file))
-                    {
-                        try
-                        {
-                            var fileInfo = File.ReadAllText(file);
-                            var des = new JavaScriptSerializer().Deserialize<List<PromoCheckFile>>(fileInfo);
+        //    while (iTries-- >= 0)
+        //    {
+        //        try
+        //        {
+        //            var lstPromos = new List<PromoCheckFile>();
+        //            var file = ConfigurationManager.AppSettings["MsgPromoFile"];
+        //            if (File.Exists(file))
+        //            {
+        //                try
+        //                {
+        //                    var fileInfo = File.ReadAllText(file);
+        //                    var des = new JavaScriptSerializer().Deserialize<List<PromoCheckFile>>(fileInfo);
 
-                            var check = des.FirstOrDefault(e => e.CheckId == promo.CheckId);
+        //                    var check = des.FirstOrDefault(e => e.CheckId == promo.CheckId);
 
-                            if (check != null)
-                            {
-                                if (check.LstPromo.Any(e => e.BarCode == promo.LstPromo[0].BarCode) == false)
-                                    check.LstPromo.Add(promo.LstPromo[0]);
-                            }
-                            else
-                            {
-                                lstPromos.Add(promo);
-                            }
-                        }
-                        catch (Exception ex1)
-                        {
-                            _log.Error($"{ex1.Message} | {ex1.StackTrace}");
-                            if (lstPromos.Count == 0)
-                                lstPromos.Add(promo);
-                        }
-                    }
-                    else
-                    {
-                        lstPromos.Add(promo);
-                    }
+        //                    if (check != null)
+        //                    {
+        //                        if (check.LstPromo.Any(e => e.BarCode == promo.LstPromo[0].BarCode) == false)
+        //                            check.LstPromo.Add(promo.LstPromo[0]);
+        //                    }
+        //                    else
+        //                    {
+        //                        lstPromos.Add(promo);
+        //                    }
+        //                }
+        //                catch (Exception ex1)
+        //                {
+        //                    _log.Error($"{ex1.Message} | {ex1.StackTrace}");
+        //                    if (lstPromos.Count == 0)
+        //                        lstPromos.Add(promo);
+        //                }
+        //            }
+        //            else
+        //            {
+        //                lstPromos.Add(promo);
+        //            }
 
-                    var ser = new JavaScriptSerializer().Serialize(lstPromos);
-                    File.WriteAllText(file, ser);
-                    break;
-                }
-                catch (Exception ex2)
-                {
-                    _log.Error($"{ex2.Message} | {ex2.StackTrace}");
-                }
-            }
-        }
+        //            var ser = new JavaScriptSerializer().Serialize(lstPromos);
+        //            File.WriteAllText(file, ser);
+        //            break;
+        //        }
+        //        catch (Exception ex2)
+        //        {
+        //            _log.Error($"{ex2.Message} | {ex2.StackTrace}");
+        //        }
+        //    }
+        //}
 
 
         private bool AddItemsToAloha(PromoModWnd dlg)
@@ -256,7 +252,7 @@ namespace Tpv.Ui.View
 
                 try
                 {
-                    funcs = new LasaFOHLib67.IberFuncsClass();
+                    funcs = new IberFuncsClass();
                 }
                 catch (Exception ex)
                 {
@@ -287,6 +283,13 @@ namespace Tpv.Ui.View
             try
             {
                 PropertyInfo propInfo = ex.GetType().GetProperty("HResult", BindingFlags.Instance | BindingFlags.NonPublic);
+
+                if (propInfo == null)
+                {
+                    _log.Error(ex.ToString());
+                    return false;
+                }
+
                 Int32 hresult = Convert.ToInt32(propInfo.GetValue(ex, null));
 
                 if (((hresult >> 16) & 0x07ff) != 0x06) // this is not an Aloha COM Error
