@@ -1,4 +1,5 @@
-﻿using log4net;
+﻿using LasaFOHLib67;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -165,7 +166,7 @@ namespace Tpv.Ui.View
             {
                 if (AddItemsToAloha(dlg))
                 {
-                    AddPromoToFile(dlg, barCode);
+                    //AddPromoToFile(dlg, barCode);
                     Close();
                     return;
                 }
@@ -250,7 +251,18 @@ namespace Tpv.Ui.View
         {
             try
             {
-                LasaFOHLib67.IberFuncs funcs = new LasaFOHLib67.IberFuncsClass();
+
+                IberFuncs funcs;
+
+                try
+                {
+                    funcs = new LasaFOHLib67.IberFuncsClass();
+                }
+                catch (Exception ex)
+                {
+                    ExtractLogError(ex);
+                    funcs = (IberFuncs)SdkFactory.GetIberFuncsInstance();
+                }
 
                 var parentEntry = funcs.BeginItem(dlg.TermId, dlg.CheckId, dlg.CodeGroupModifier, "", -999999999);
 
@@ -266,26 +278,30 @@ namespace Tpv.Ui.View
             }
             catch (Exception ex)
             {
-                try
+                return ExtractLogError(ex);
+            }
+        }
+
+        private static bool ExtractLogError(Exception ex)
+        {
+            try
+            {
+                PropertyInfo propInfo = ex.GetType().GetProperty("HResult", BindingFlags.Instance | BindingFlags.NonPublic);
+                Int32 hresult = Convert.ToInt32(propInfo.GetValue(ex, null));
+
+                if (((hresult >> 16) & 0x07ff) != 0x06) // this is not an Aloha COM Error
                 {
-                    PropertyInfo propInfo = ex.GetType().GetProperty("HResult", BindingFlags.Instance | BindingFlags.NonPublic);
-                    Int32 hresult = Convert.ToInt32(propInfo.GetValue(ex, null));
-
-                    if (((hresult >> 16) & 0x07ff) != 0x06) // this is not an Aloha COM Error
-                    {
-                        _log.Error(ex.ToString());
-                        return false;
-                    }
-
-                    _log.Error($"Aloha returned error code {hresult & 0xFFF}");
-                    return false;
-
-                }
-                catch (Exception exIn)
-                {
-                    _log.Error(exIn.Message + " | " + exIn.StackTrace);
+                    _log.Error(ex.ToString());
                     return false;
                 }
+
+                _log.Error($"Aloha returned error code {hresult & 0xFFF}");
+                return false;
+            }
+            catch (Exception exIn)
+            {
+                _log.Error(exIn.Message + " | " + exIn.StackTrace);
+                return false;
             }
         }
 

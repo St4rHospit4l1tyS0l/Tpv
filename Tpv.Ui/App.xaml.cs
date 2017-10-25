@@ -1,6 +1,7 @@
 ﻿using log4net;
 using log4net.Config;
 using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Threading;
 using Tpv.Ui.Model;
@@ -18,19 +19,29 @@ namespace Tpv.Ui
             base.OnStartup(e);
             XmlConfigurator.Configure(); //only once
 
+            KillOtherInstances();
+
             GlobalParams.ProcessArguments(e.Args);
+        }
 
-            //var response = new ResponseMessage();
-            //Database.DicPromotions = DbReader.ReadDictionaryFromFile(ConfigurationManager.AppSettings["DatabaseFile"], response);
-
-            //if (response.IsSuccess)
-            //{
-            //    _log.Info("Catálogo cargado de forma correcta");
-            //    return;
-            //}
-            //_log.Error(response.Message);
-            //MessageBox.Show(response.Message, "TPV", MessageBoxButton.OK, MessageBoxImage.Error);
-            //Shutdown(0);
+        private void KillOtherInstances()
+        {
+            try
+            {
+                var current = Process.GetCurrentProcess();
+                var processes = Process.GetProcessesByName(current.ProcessName);
+                foreach (var process in processes)
+                {
+                    if (process.Id != current.Id)
+                    {
+                        process.Kill();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
         private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs args)

@@ -297,6 +297,8 @@ namespace Tpv.Ui.View
                         modgrpIds.Add(id);
                 }
 
+                //_log.Info(string.Join(", ", modgrpIds.Select(e => e.ToString()).ToArray()));
+
                 try
                 {
                     LasaFOHLib67.IIberEnum modgroups = depot.GetEnum(16);
@@ -317,15 +319,19 @@ namespace Tpv.Ui.View
                         modgroup = modgroups.Next();
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     // expected
+                    _log.Error(ex.Message + " | " + ex.StackTrace);
+
                 }
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // expected
+                _log.Error(ex.Message + " | " + ex.StackTrace);
+
             }
 
 

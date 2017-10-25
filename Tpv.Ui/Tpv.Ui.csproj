@@ -152,6 +152,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\SdkFactory.cs" />
     <Compile Include="Model\Constants.cs" />
     <Compile Include="Model\GlobalParams.cs" />
     <Compile Include="Model\ItemGroupModifier.cs" />
