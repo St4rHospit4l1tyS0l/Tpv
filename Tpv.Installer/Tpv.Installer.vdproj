@@ -21,19 +21,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_7A45EE709DC5203A00BBF8B51DE7CBFC"
-        "OwnerKey" = "8:_E8B23CFA16C4760ADFA4452B344A00B9"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_B618EE4418EF4CFA06733924757E7B93"
-        "OwnerKey" = "8:_FF33E9FE1FE04D65A0217C93476CDD4E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_E8B23CFA16C4760ADFA4452B344A00B9"
         "OwnerKey" = "8:_FF33E9FE1FE04D65A0217C93476CDD4E"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -41,12 +29,6 @@
         {
         "MsmKey" = "8:_FF33E9FE1FE04D65A0217C93476CDD4E"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_E8B23CFA16C4760ADFA4452B344A00B9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -85,6 +67,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.5"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.5 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.5"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -101,6 +99,17 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                }
+            }
         }
     }
     "Deployable"
@@ -161,26 +170,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7A45EE709DC5203A00BBF8B51DE7CBFC"
-            {
-            "SourcePath" = "8:IBERQS.tlb"
-            "TargetName" = "8:IBERQS.tlb"
-            "Tag" = "8:"
-            "Folder" = "8:_16E08BAE6F00496EA3FCEAF093BB2757"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:2"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_B618EE4418EF4CFA06733924757E7B93"
             {
             "AssemblyRegister" = "3:1"
@@ -195,37 +184,6 @@
                     }
                 }
             "SourcePath" = "8:log4net.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_16E08BAE6F00496EA3FCEAF093BB2757"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_E8B23CFA16C4760ADFA4452B344A00B9"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:LasaFOHLib67, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_E8B23CFA16C4760ADFA4452B344A00B9"
-                    {
-                    "Name" = "8:LasaFOHLib67.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:LasaFOHLib67.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_16E08BAE6F00496EA3FCEAF093BB2757"
@@ -299,15 +257,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Tpv.Installer"
-        "ProductCode" = "8:{1D4785F8-5326-418B-B052-D5E2E6E4A348}"
-        "PackageCode" = "8:{99872B25-DDEC-4E47-A391-84263126FDBC}"
+        "ProductCode" = "8:{D2798CF3-0ACF-4ABF-8674-AB7C2A96872D}"
+        "PackageCode" = "8:{0C4AF872-5417-4A39-89CE-5689CA143238}"
         "UpgradeCode" = "8:{E3FF0255-B7D2-436A-8C97-8123548B9B12}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.0"
+        "ProductVersion" = "8:17.11.7"
         "Manufacturer" = "8:Default Company Name"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
