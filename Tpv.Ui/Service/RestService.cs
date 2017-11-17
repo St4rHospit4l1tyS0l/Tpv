@@ -7,9 +7,14 @@ using Tpv.Ui.Model;
 
 namespace Tpv.Ui.Service
 {
-    public class RestService
+    public static class RestService
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(RestService));
+
+        static RestService()
+        {
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+        }
 
         public static bool CallLoyaltyPostService(string requestUrl, PosCheckModel model)
         {
