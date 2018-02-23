@@ -24,6 +24,19 @@ namespace Tpv.Ui.Service
                     if (!IniEnvReaderService.GetTpvAndStoreInfo(model))
                         return;
 
+
+                    if (model.Pvp <= 0)
+                    {
+                        MessageExt.ShowErrorMessage("Para poder sumar los puntos, el ticket debe tener un valor, ya que actualmente tiene un total de cero.");
+                        return;
+                    }
+
+                    if (model.Pvp < 2.5m)
+                    {
+                        MessageExt.ShowErrorMessage("Para poder sumar los puntos, el ticket debe tener un valor mayor o igual a € 2.5.");
+                        return;
+                    }
+
                     var urlLoyalty = UrlRestFactory.GetUrlLoyalty();
 
                     if (RestService.CallLoyaltyPostService(urlLoyalty, model))

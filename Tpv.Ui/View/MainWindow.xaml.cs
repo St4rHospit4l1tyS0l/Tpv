@@ -298,7 +298,8 @@ namespace Tpv.Ui.View
                     return false;
                 }
 
-                _log.Error($"Aloha returned error code {hresult & 0xFFF}");
+                var erroCode = hresult & 0xFFF;
+                _log.Error($"Aloha returned error code {erroCode}");
                 return false;
             }
             catch (Exception exIn)
