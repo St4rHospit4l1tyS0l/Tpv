@@ -66,7 +66,7 @@ namespace Tpv.Ui.Service
 
             try
             {
-                IberDepot depot = new IberDepotClass();
+                var depot = new IberDepotClass();
                 IIberObject localState = depot.GetEnum(720).First();
 
                 try
