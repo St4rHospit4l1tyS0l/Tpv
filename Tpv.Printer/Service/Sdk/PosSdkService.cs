@@ -147,7 +147,7 @@ namespace Tpv.Printer.Service.Sdk
                 return response;
             }
 
-            sdkModel.Balance = GetFullBalance(GlobalParams.SdkModel.CheckId);
+            sdkModel.Balance = GetFullBalance(sdkModel.CheckId);
             response.IsSuccess = true;
             return response;
         }
@@ -183,21 +183,6 @@ namespace Tpv.Printer.Service.Sdk
         {
             response.IsSuccess = false;
             response.Message = GetPosException(ex, errorCode);
-        }
-
-        public static string ReadCode(int checkId)
-        {
-            try
-            {
-                var value = _posSdkFunc.Funcs.GetObjectAttribute(INTERNAL_CHECKS, checkId, Constants.PosAttribute.CODE_CHRISTMAS_PROMO);
-
-                return string.IsNullOrEmpty(value) ? null : value;
-            }
-            catch (Exception ex)
-            {
-                ExtractException(ex, new ResponseMessage(), Constants.CodeErrors.READ_CODE_POS_ERROR);
-                return null;
-            }
         }
 
         private static string GetPosException(Exception ex, int errorCode)
@@ -288,45 +273,6 @@ namespace Tpv.Printer.Service.Sdk
         {
             var sValues = line.Split('=');
             return sValues[1].Trim();
-        }
-
-        public static void CallPrint()
-        {
-            try
-            {
-                _posSdkFunc.Funcs.PrintCheck(GlobalParams.SdkModel.TerminalId, GlobalParams.SdkModel.CheckId);
-            }
-            catch (Exception ex)
-            {
-                var response = new ResponseMessage();
-                ExtractException(ex, response, Constants.CodeErrors.CALL_PRINT_POS_ERROR);
-                Logger.Write(response.Message);
-            }
-        }
-
-        public static void RefreshPos()
-        {
-            try
-            {
-                _posSdkFunc.Funcs.RefreshCheckDisplay();
-            }
-            catch (Exception ex)
-            {
-                var response = new ResponseMessage();
-                ExtractException(ex, response, Constants.CodeErrors.REFRESH_POS_ERROR);
-            }
-        }
-
-        public static void WriteCode(int sdkModelCheckId, string code)
-        {
-            try
-            {
-                _posSdkFunc.Funcs.SetObjectAttribute(INTERNAL_CHECKS, GlobalParams.SdkModel.CheckId, Constants.PosAttribute.CODE_CHRISTMAS_PROMO, code);
-            }
-            catch (Exception ex)
-            {
-                ExtractException(ex, new ResponseMessage(), Constants.CodeErrors.WRITE_CODE_POS_ERROR);
-            }
         }
     }
 }

@@ -20,16 +20,73 @@ namespace Tpv.Printer.Service.Shared
         }
         public static string AddCodeInformation(XDocument xDoc, string code, int checkId)
         {
-            var line = "****";
-            var child = (xDoc.Descendants("PRINTCENTERED").FirstOrDefault(e => e.Value.StartsWith(line)) ?? xDoc.Descendants("STOPJOURNAL").LastOrDefault()) ?? xDoc.Descendants("POSTLINEFEEDS").FirstOrDefault();
+            const string cline = "****";
+            var child = (xDoc.Descendants("PRINTCENTERED").FirstOrDefault(e => e.Value.StartsWith(cline)) ?? xDoc.Descendants("STOPJOURNAL").LastOrDefault()) ?? xDoc.Descendants("POSTLINEFEEDS").FirstOrDefault();
 
-            var element = AddQrCode(code, checkId);
+            XElement element;
+            foreach (var line in MasterModel.PrintLines)
+            {
+                if (child == null) continue;
+
+                element = AddPrintingStyle(line.Size, line.Style);
+                child.AddBeforeSelf(element);
+
+                var text = line.Text.Replace(Constants.PrintingTag.TAG_CODE, code);
+                switch (line.Align)
+                {
+                    case Constants.PrintingTag.PRINTLEFT:
+                    case Constants.PrintingTag.PRINTRIGHT:
+                        element = new XElement(Constants.PrintingTag.PRINTLEFTRIGHT);
+                        element.Add(new XElement(line.Align, text));
+                        child.AddBeforeSelf(element);
+                        break;
+
+                    default:
+                        child.AddBeforeSelf(new XElement(Constants.PrintingTag.PRINTCENTERED, text));
+                        break;
+                }
+            }
+
+            child?.AddBeforeSelf(AddPrintingStyle(Constants.PrintingTag.PS_CW_MEDIUM, Constants.PrintingTag.PST_NORMAL));
+
+            element = AddQrCode(code, checkId);
 
             if (child != null)
                 child.AddBeforeSelf(element);
             else
                 xDoc.AddAfterSelf(element);
 
+            return xDoc.ToString();
+        }
+
+        public static string AddCodeInformation(XDocument xDoc, string code)
+        {
+            var child = xDoc.Descendants("PRINTCENTERED").FirstOrDefault(e => e.Value.StartsWith("****"));
+
+            if (child == null)
+                return "";
+
+            foreach (var line in MasterModel.PrintLines)
+            {
+                child.AddBeforeSelf(AddPrintingStyle(line.Size, line.Style));
+
+                var text = line.Text.Replace(Constants.PrintingTag.TAG_CODE, code);
+                switch (line.Align)
+                {
+                    case Constants.PrintingTag.PRINTLEFT:
+                    case Constants.PrintingTag.PRINTRIGHT:
+                        var element = new XElement(Constants.PrintingTag.PRINTLEFTRIGHT);
+                        element.Add(new XElement(line.Align, text));
+                        child.AddBeforeSelf(element);
+                        break;
+
+                    default:
+                        child.AddBeforeSelf(new XElement(Constants.PrintingTag.PRINTCENTERED, text));
+                        break;
+                }
+            }
+
+            child.AddBeforeSelf(AddPrintingStyle(Constants.PrintingTag.PS_CW_MEDIUM, Constants.PrintingTag.PST_NORMAL));
             return xDoc.ToString();
         }
 
@@ -60,6 +117,12 @@ namespace Tpv.Printer.Service.Shared
             qrCodeImage.Save(Path.Combine(pathBmp, bmpName), ImageFormat.Bmp);
 
             return bmpName;
+        }
+
+        private static XElement AddPrintingStyle(int cpi, int style)
+        {
+            var font = new XElement(Constants.PrintingTag.PRINTSTYLE, new XElement(Constants.PrintingTag.CPI, cpi), new XElement(Constants.PrintingTag.STYLE, style));
+            return font;
         }
     }
 }

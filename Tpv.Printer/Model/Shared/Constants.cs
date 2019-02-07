@@ -150,11 +150,6 @@ namespace Tpv.Printer.Model.Shared
 
         }
 
-        public class PosAttribute
-        {
-            public const string CODE_CHRISTMAS_PROMO = "CCP";
-        }
-
         public class Pos
         {
             public const string UNITNUMBER = "UNITNUMBER";

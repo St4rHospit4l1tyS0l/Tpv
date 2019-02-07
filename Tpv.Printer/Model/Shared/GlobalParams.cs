@@ -12,7 +12,6 @@ namespace Tpv.Printer.Model.Shared
         public static string IberDir { get; set; }
         public static string DebugPathTmpDir { get; set; }
         public static PosSdkFuncModel PosSdkFunc { get; set; }
-        public static PosSdkModel SdkModel { get; set; }
         public static string PosDirDbfFiles { get; set; }
         public static List<int> ItemsIds { get; set; }
         public static string Tpv { get; set; }

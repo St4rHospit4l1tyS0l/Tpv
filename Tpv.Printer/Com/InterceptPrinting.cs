@@ -55,8 +55,6 @@ namespace Tpv.Printer.Com
                     return xmlIn;
                 }
 
-                GlobalParams.SdkModel = new PosSdkModel { CheckId = checkId };
-
                 PosSdkService.ReadIniConf();
 
                 PosSdkModel model;

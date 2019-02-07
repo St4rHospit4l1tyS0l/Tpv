@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Security.Cryptography;
+using System.Text;
 using Tpv.Printer.Model.Shared;
 
 namespace Tpv.Printer.Infrastructure.Crypto
@@ -9,15 +10,23 @@ namespace Tpv.Printer.Infrastructure.Crypto
     {
         public static string EncryptString(string plainText)
         {
-            var key = Convert.FromBase64String(GlobalParams.AES_KEY);
-            var iv = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            byte[] key;
+            using (var sha256 = SHA256.Create())
+            {
+                key = sha256.ComputeHash(Encoding.ASCII.GetBytes(GlobalParams.AES_KEY));
+            }
 
+            var iv = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             return EncryptStringToBytesAes(plainText, key, iv);
         }
 
         public static string DecryptString(string cipherText)
         {
-            var key = Convert.FromBase64String(GlobalParams.AES_KEY);
+            byte[] key;
+            using (var sha256 = SHA256.Create())
+            {
+                key = sha256.ComputeHash(Encoding.ASCII.GetBytes(GlobalParams.AES_KEY));
+            }
             var iv = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             return DecryptStringFromBytesAes(cipherText, key, iv);
         }
@@ -31,7 +40,13 @@ namespace Tpv.Printer.Infrastructure.Crypto
 
             using (var aesAlg = new AesManaged())
             {
-                aesAlg.Key = key;
+                var aesKey = new byte[32];
+                Array.Copy(key, 0, aesKey, 0, 32);
+
+                aesAlg.Key = aesKey;
+                aesAlg.KeySize = 256;
+                aesAlg.BlockSize = 128;
+                aesAlg.Mode = CipherMode.CBC;
                 aesAlg.IV = iv;
 
                 // Create a decrytor to perform the stream transform.
