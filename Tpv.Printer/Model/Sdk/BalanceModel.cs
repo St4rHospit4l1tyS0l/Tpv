@@ -4,6 +4,6 @@
     {
         public decimal SubTotal { get; set; }
         public decimal Tax { get; set; }
-        public decimal Balance => SubTotal + Tax;
+        public decimal Pvp => SubTotal + Tax;
     }
 }

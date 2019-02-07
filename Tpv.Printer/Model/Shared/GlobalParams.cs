@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using Tpv.Printer.Model.Sdk;
 
@@ -7,6 +6,8 @@ namespace Tpv.Printer.Model.Shared
 {
     public static class GlobalParams
     {
+        public const string AES_KEY = "Zxc0122W_THYiopdwes345UUgh";
+
         private static string _pathDatabase;
         public static string IberDir { get; set; }
         public static string DebugPathTmpDir { get; set; }
@@ -14,6 +15,7 @@ namespace Tpv.Printer.Model.Shared
         public static PosSdkModel SdkModel { get; set; }
         public static string PosDirDbfFiles { get; set; }
         public static List<int> ItemsIds { get; set; }
+        public static string Tpv { get; set; }
 
         public static string ConnStr
         {
@@ -31,10 +33,5 @@ namespace Tpv.Printer.Model.Shared
         public static string UnitNumber { get; set; }
         public static Dictionary<int, string> DicItems { get; set; }
 
-
-        static GlobalParams()
-        {
-            DayLog = new DayLogModel { Day = DateTime.Today.Day };
-        }
     }
 }

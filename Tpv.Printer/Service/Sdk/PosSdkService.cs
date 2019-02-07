@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LasaFOHLib;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -51,6 +52,37 @@ namespace Tpv.Printer.Service.Sdk
             }
         }
 
+        public static bool HasExcludeByOrderMode(int iCheckId, ResponseMessage response)
+        {
+            try
+            {
+                if (MasterModel.ExcludedOrderModes == null || MasterModel.ExcludedOrderModes.Count == 0)
+                    return false;
+
+
+                var pDepot = new IberDepot();
+                Logger.Log("HasExcludeByOrderMode");
+
+
+                foreach (IIberObject chkObject in pDepot.FindObjectFromId(INTERNAL_CHECKS, iCheckId))
+                {
+                    var orderMode = chkObject.GetLongVal("ORDERMODE");
+                    Logger.Log($"OM: {orderMode} - C: {iCheckId}");
+
+                    if (MasterModel.ExcludedOrderModes.Any(e => e == orderMode))
+                        return true;
+
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                ExtractException(ex, response, Constants.CodeErrors.EXTRACT_INFO_POS_ERROR);
+                return false;
+            }
+        }
+
         public static int GetReadableCheckId(this int checkId)
         {
             long decodeTerm = checkId >> 20;
@@ -58,9 +90,10 @@ namespace Tpv.Printer.Service.Sdk
             return Convert.ToInt32(decodeTerm * 10000 + decodeRel);
         }
 
-        public static ResponseMessage GetInstanceFunctions(int checkId)
+        public static ResponseMessage GetInstanceFunctionsAndCheck(int checkId, out PosSdkModel sdkModel)
         {
             var response = new ResponseMessage();
+            sdkModel = null;
             if (_posSdkFunc == null)
             {
                 try
@@ -97,9 +130,15 @@ namespace Tpv.Printer.Service.Sdk
                 }
             }
 
+            if (HasExcludeByOrderMode(checkId, response))
+            {
+                response.SetErrorMessage("Excluded by OrderMode");
+                return response;
+            }
+
             try
             {
-                GlobalParams.SdkModel = ReadCheckInfo(checkId);
+                sdkModel = ReadCheckInfo(checkId);
             }
             catch (Exception ex)
             {
@@ -108,7 +147,7 @@ namespace Tpv.Printer.Service.Sdk
                 return response;
             }
 
-            GlobalParams.SdkModel.Balance = GetFullBalance(GlobalParams.SdkModel.CheckId);
+            sdkModel.Balance = GetFullBalance(GlobalParams.SdkModel.CheckId);
             response.IsSuccess = true;
             return response;
         }
@@ -195,6 +234,10 @@ namespace Tpv.Printer.Service.Sdk
             GlobalParams.IberDir = Environment.GetEnvironmentVariable("IBERDIR", EnvironmentVariableTarget.Machine);
             if (string.IsNullOrEmpty(GlobalParams.IberDir))
                 throw new ArgumentException("IBERDIR enviroment variable must be defined");
+
+            GlobalParams.Tpv = Environment.GetEnvironmentVariable("TERM", EnvironmentVariableTarget.Machine);
+            if (string.IsNullOrEmpty(GlobalParams.Tpv))
+                throw new ArgumentException("TERM enviroment variable must be defined");
 
             GlobalParams.DebugPathTmpDir = Path.Combine(GlobalParams.IberDir, "TMP", Logger.FILE_PATH);
             GlobalParams.PosDirDbfFiles = Path.Combine(GlobalParams.IberDir, "DATA");

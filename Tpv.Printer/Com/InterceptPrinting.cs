@@ -2,6 +2,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
+using Tpv.Printer.Infrastructure.Crypto;
 using Tpv.Printer.Infrastructure.Log;
 using Tpv.Printer.Model.Sdk;
 using Tpv.Printer.Model.Shared;
@@ -58,33 +59,20 @@ namespace Tpv.Printer.Com
 
                 PosSdkService.ReadIniConf();
 
-                //var response = new ResponseMessage();
-                var response = PosSdkService.GetInstanceFunctions(checkId);
+                PosSdkModel model;
+                var response = PosSdkService.GetInstanceFunctionsAndCheck(checkId, out model);
 
                 if (!response.IsSuccess)
                 {
-                    MessageExt.ShowErrorMessage(response.Message);
+                    Logger.Log($"GetInstanceFunctionsAndCheck Error: {response.Message}");
                     return xmlIn;
                 }
 
-                var code = PosSdkService.ReadCode(GlobalParams.SdkModel.CheckId);
+                var code = GenerateCode(model);
+                Logger.Log("Code E: " + code);
 
-                Logger.Log("CheckId: " + GlobalParams.SdkModel.CheckId);
 
-
-                if (code == null)
-                {
-                }
-
-                PosSdkService.WriteCode(GlobalParams.SdkModel.CheckId, code);
-                var xmlOut = XmlService.AddCodeInformation(xDoc, code);
-
-                if (!response.IsSuccess)
-                {
-                    Logger.Log($"MarkCodeAsPrinted error: {response.Message}");
-                    //MessageExt.ShowErrorMessage(response.Message);
-                }
-
+                var xmlOut = XmlService.AddCodeInformation(xDoc, code, model.CheckId);
                 return xmlOut;
             }
             catch (Exception ex)
@@ -94,6 +82,24 @@ namespace Tpv.Printer.Com
             }
 
             return xmlIn;
+        }
+
+        private string GenerateCode(PosSdkModel model)
+        {
+            var code = $"{model.ReadableCheckId}#{GlobalParams.Tpv}#{GlobalParams.UnitNumber}#{model.Balance.Pvp}#{DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond}";
+            Logger.Log("Code: " + code);
+            /*
+             El tpv obtendrá la siguiente información del ticket de compra:
+            NumTicket#tpv#shop#pvp#fxOper
+            Por ejemplo: 001#1#504#10#1529481484708
+
+                         */
+            /*
+             AES-256 y en base 64 para evitar caracteres no
+permitidos en peticiones http. La clave para encriptar y desencriptar será:
+Zxc0122W_THYiopdwes345UUgh
+             */
+            return AdvancedEncryptionStandard.EncryptString(code);
         }
 
         string IInterceptAlohaPrinting.PrintXML(int fohDocumentType, string xmlIn)

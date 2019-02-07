@@ -109,6 +109,13 @@ namespace Tpv.Printer.Model.Shared
             public const string PRINTLEFTRIGHT = "PRINTLEFTRIGHT";
             public const string PRINTLEFT = "LEFT";
             public const string PRINTRIGHT = "RIGHT";
+            public const string BTIMAP = "PRINTBITMAP";
+
+
+            public const int PLJUSTIFY_LEFT = 0;
+            public const int PLJUSTIFY_CENTER = 1;
+            public const int PLJUSTIFY_RIGHT = 2;
+
 
             public static readonly Dictionary<string, string> CharAlign = new Dictionary<string, string>
             {

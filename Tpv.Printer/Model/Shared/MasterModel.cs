@@ -15,6 +15,8 @@ namespace Tpv.Printer.Model.Shared
         public static int QrPixelPerModule { get; set; }
         public static string QrSizeOnTicket { get; set; }
         public static int BarCodeHeight { get; set; }
+        public static List<int> ExcludedOrderModes { get; set; }
+
 
 
         public static Dictionary<string, MasterPropertyModel> Parameters = new Dictionary<string, MasterPropertyModel>
@@ -22,6 +24,7 @@ namespace Tpv.Printer.Model.Shared
            {"QR_PIXEL_PER_MODULE=", new MasterPropertyModel(SetIntValue, nameof(QrPixelPerModule), true, "Pixel por module on QR (QR_PIXEL_PER_MODULE)")}
             ,{"QR_SIZE_ON_TICKET=", new MasterPropertyModel(SetStringValue, nameof(QrSizeOnTicket), true, "Size on ticket (QR_SIZE_ON_TICKET)")}
             ,{"BARCODE_HEIGHT=", new MasterPropertyModel(SetIntValue, nameof(BarCodeHeight), true, "Barcode height in milimiters (BARCODE_HEIGHT)")}
+            ,{"EXCLUDED_ORDER_MODES=", new MasterPropertyModel(SetListInt, nameof(ExcludedOrderModes), false, "Excluded order modes (EXCLUDED_ORDER_MODES)")}
             ,{"DEBUG_MODE=", new MasterPropertyModel(SetBoolValue, nameof(IsDebugMode), false, "Debug Mode (DEBUG_MODE), FALSE no, TRUE yes")}
             ,{"MAX_DEBUG_FILE_SIZE=", new MasterPropertyModel(SetBoolValue, nameof(MaxDebugFileSize), true, "Max debug file size (MAX_DEBUG_FILE_SIZE) in MB")}
         };
