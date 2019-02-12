@@ -10,23 +10,14 @@ namespace Tpv.Printer.Infrastructure.Crypto
     {
         public static string EncryptString(string plainText)
         {
-            byte[] key;
-            using (var sha256 = SHA256.Create())
-            {
-                key = sha256.ComputeHash(Encoding.ASCII.GetBytes(GlobalParams.AES_KEY));
-            }
-
+            var key = Encoding.ASCII.GetBytes(GlobalParams.AES_KEY);
             var iv = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             return EncryptStringToBytesAes(plainText, key, iv);
         }
 
         public static string DecryptString(string cipherText)
         {
-            byte[] key;
-            using (var sha256 = SHA256.Create())
-            {
-                key = sha256.ComputeHash(Encoding.ASCII.GetBytes(GlobalParams.AES_KEY));
-            }
+            var key = Encoding.ASCII.GetBytes(GlobalParams.AES_KEY);
             var iv = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             return DecryptStringFromBytesAes(cipherText, key, iv);
         }
@@ -40,14 +31,16 @@ namespace Tpv.Printer.Infrastructure.Crypto
 
             using (var aesAlg = new AesManaged())
             {
-                var aesKey = new byte[32];
-                Array.Copy(key, 0, aesKey, 0, 32);
-
-                aesAlg.Key = aesKey;
                 aesAlg.KeySize = 256;
-                aesAlg.BlockSize = 128;
+                //aesAlg.BlockSize = 128;
                 aesAlg.Mode = CipherMode.CBC;
+                aesAlg.Padding = PaddingMode.PKCS7;
+                aesAlg.Key = key;
                 aesAlg.IV = iv;
+
+                //aesAlg.GenerateKey();
+                //string keyStr = Convert.ToBase64String(aesAlg.Key);
+                //Console.WriteLine(keyStr);
 
                 // Create a decrytor to perform the stream transform.
                 var encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
@@ -84,6 +77,10 @@ namespace Tpv.Printer.Infrastructure.Crypto
 
             using (var aesAlg = new AesManaged())
             {
+                aesAlg.KeySize = 256;
+                aesAlg.BlockSize = 128;
+                aesAlg.Mode = CipherMode.CBC;
+                aesAlg.Padding = PaddingMode.PKCS7;
                 aesAlg.Key = key;
                 aesAlg.IV = iv;
 

@@ -6,7 +6,7 @@ namespace Tpv.Printer.Model.Shared
 {
     public static class GlobalParams
     {
-        public const string AES_KEY = "Zxc0122W_THYiopdwes345UUgh";
+        public const string AES_KEY = "EeornBJ4EdLClyYmLWmpkEt46QDTdmIV";
 
         private static string _pathDatabase;
         public static string IberDir { get; set; }

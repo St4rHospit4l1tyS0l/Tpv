@@ -18,10 +18,13 @@ namespace Tpv.Printer.Service.Shared
 
             return Constants.NULL_ID;
         }
+
         public static string AddCodeInformation(XDocument xDoc, string code, int checkId)
         {
             const string cline = "****";
-            var child = (xDoc.Descendants("PRINTCENTERED").FirstOrDefault(e => e.Value.StartsWith(cline)) ?? xDoc.Descendants("STOPJOURNAL").LastOrDefault()) ?? xDoc.Descendants("POSTLINEFEEDS").FirstOrDefault();
+            var child = (xDoc.Descendants("PRINTCENTERED").FirstOrDefault(e => e.Value.StartsWith(cline)) ??
+                         xDoc.Descendants("STOPJOURNAL").LastOrDefault()) ??
+                        xDoc.Descendants("POSTLINEFEEDS").FirstOrDefault();
 
             XElement element;
             foreach (var line in MasterModel.PrintLines)
@@ -121,7 +124,8 @@ namespace Tpv.Printer.Service.Shared
 
         private static XElement AddPrintingStyle(int cpi, int style)
         {
-            var font = new XElement(Constants.PrintingTag.PRINTSTYLE, new XElement(Constants.PrintingTag.CPI, cpi), new XElement(Constants.PrintingTag.STYLE, style));
+            var font = new XElement(Constants.PrintingTag.PRINTSTYLE, new XElement(Constants.PrintingTag.CPI, cpi),
+                new XElement(Constants.PrintingTag.STYLE, style));
             return font;
         }
     }
