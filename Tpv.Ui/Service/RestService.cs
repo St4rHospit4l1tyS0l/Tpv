@@ -13,6 +13,7 @@ namespace Tpv.Ui.Service
 
         static RestService()
         {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
         }
 
@@ -29,6 +30,7 @@ namespace Tpv.Ui.Service
                 request.Accept = "application/json";
                 request.ContentType = " application/json";
                 request.ContentLength = data.Length;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 
                 using (var stream = request.GetRequestStream())
                 {
@@ -92,6 +94,7 @@ namespace Tpv.Ui.Service
                 request.Method = "GET";
                 request.KeepAlive = false;
                 request.Accept = "application/json";
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 
                 try
                 {
