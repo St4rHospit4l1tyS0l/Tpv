@@ -1,4 +1,4 @@
-﻿using LasaFOHLib67;
+﻿using AlohaFOHLib.Intl;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -248,11 +248,15 @@ namespace Tpv.Ui.View
             try
             {
 
-                IberFuncs funcs;
+                IIberFuncs20 funcs;
 
                 try
                 {
-                    funcs = new IberFuncsClass();
+#if DEBUG
+            funcs = new IberFuncs();
+#else
+                    funcs = SdkFactory.GetIberFuncsInstance() as IIberFuncs20;
+#endif
                 }
                 catch (Exception ex)
                 {
@@ -260,11 +264,13 @@ namespace Tpv.Ui.View
                     funcs = (IberFuncs)SdkFactory.GetIberFuncsInstance();
                 }
 
+                _log.Info($"Begin item: {dlg.TermId},{dlg.CheckId},{dlg.CodeGroupModifier}");
                 var parentEntry = funcs.BeginItem(dlg.TermId, dlg.CheckId, dlg.CodeGroupModifier, "", -999999999);
 
                 var ticketItems = dlg.GetTicketItems();
                 foreach (var mod in ticketItems)
                 {
+                    _log.Info($"Mod item: {dlg.TermId}, {parentEntry}, {mod.ItemModifier.Id}, {mod.ModCode}");
                     funcs.ModItem(dlg.TermId, parentEntry, mod.ItemModifier.Id, "", -999999999, mod.ModCode);
                 }
 

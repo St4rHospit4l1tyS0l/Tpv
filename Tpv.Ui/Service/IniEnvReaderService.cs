@@ -8,7 +8,7 @@ namespace Tpv.Ui.Service
     public static class IniEnvReaderService
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(PosService));
-        private static string _iberDir;
+        private static string _localDir;
 
         public static bool GetTpvAndStoreInfo(PosCheckModel model)
         {
@@ -22,10 +22,10 @@ namespace Tpv.Ui.Service
         {
             try
             {
-                _iberDir = Environment.GetEnvironmentVariable("IBERDIR", EnvironmentVariableTarget.Machine);
-                if (string.IsNullOrEmpty(_iberDir))
+                _localDir = Environment.GetEnvironmentVariable("LOCALDIR", EnvironmentVariableTarget.Machine);
+                if (string.IsNullOrEmpty(_localDir))
                 {
-                    MessageExt.ShowErrorMessage("Es necesario tener definido la variable de entorno IBERDIR, con el valor correcto");
+                    MessageExt.ShowErrorMessage("Es necesario tener definido la variable de entorno LOCALDIR, con el valor correcto");
                     return false;
                 }
 
@@ -50,7 +50,7 @@ namespace Tpv.Ui.Service
         {
             try
             {
-                var sFullPath = Path.Combine(Path.Combine(_iberDir, Constants.POS_DATA_PATH), Constants.POS_INI_FILE);
+                var sFullPath = Path.Combine(Path.Combine(_localDir, Constants.POS_DATA_PATH), Constants.POS_INI_FILE);
 
                 if (!File.Exists(sFullPath))
                 {

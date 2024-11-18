@@ -35,8 +35,8 @@
       <HintPath>..\lib\AdmInterceptActivity.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="LasaFOHLib67">
-      <HintPath>..\lib\LasaFOHLib67.dll</HintPath>
+    <Reference Include="AlohaFOHLib.Intl">
+      <HintPath>..\lib\AlohaFOHLib.Intl.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />

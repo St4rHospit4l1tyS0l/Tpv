@@ -1,5 +1,5 @@
 ﻿
-using LasaFOHLib67;
+using AlohaFOHLib.Intl;
 using log4net;
 using System;
 using Tpv.Ui.Model;

@@ -9,7 +9,7 @@ namespace Tpv.Printer.Model.Shared
         public const string AES_KEY = "EeornBJ4EdLClyYmLWmpkEt46QDTdmIV";
 
         private static string _pathDatabase;
-        public static string IberDir { get; set; }
+        public static string LocalDir { get; set; }
         public static string DebugPathTmpDir { get; set; }
         public static PosSdkFuncModel PosSdkFunc { get; set; }
         public static string PosDirDbfFiles { get; set; }

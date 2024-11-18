@@ -1,7 +1,7 @@
-﻿using LasaFOHLib;
-using LoyaltyIntegrationLib.Service.Sdk;
+﻿using AlohaFOHLib.Intl;
 using System;
 using Tpv.Printer.Model.Shared;
+using Tpv.Printer.Service.Sdk;
 
 namespace Tpv.Printer.Model.Sdk
 {

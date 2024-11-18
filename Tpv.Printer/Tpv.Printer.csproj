@@ -30,8 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LasaFOHLib">
-      <HintPath>..\lib\LasaFOHLib.dll</HintPath>
+    <Reference Include="AlohaFOHLib.Intl">
+      <HintPath>..\lib\AlohaFOHLib.Intl.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="PresentationFramework" />

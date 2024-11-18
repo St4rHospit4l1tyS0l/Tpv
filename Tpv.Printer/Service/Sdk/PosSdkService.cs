@@ -1,8 +1,8 @@
-﻿using LasaFOHLib;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using AlohaFOHLib.Intl;
 using Tpv.Printer.Infrastructure.Log;
 using Tpv.Printer.Model.Sdk;
 using Tpv.Printer.Model.Shared;
@@ -216,17 +216,17 @@ namespace Tpv.Printer.Service.Sdk
             if (MasterModel.IsValidModel)
                 return;
 
-            GlobalParams.IberDir = Environment.GetEnvironmentVariable("IBERDIR", EnvironmentVariableTarget.Machine);
-            if (string.IsNullOrEmpty(GlobalParams.IberDir))
-                throw new ArgumentException("IBERDIR enviroment variable must be defined");
+            GlobalParams.LocalDir = Environment.GetEnvironmentVariable("LOCALDIR", EnvironmentVariableTarget.Machine);
+            if (string.IsNullOrEmpty(GlobalParams.LocalDir))
+                throw new ArgumentException("LOCALDIR environment variable must be defined");
 
             GlobalParams.Tpv = Environment.GetEnvironmentVariable("TERM", EnvironmentVariableTarget.Machine);
             if (string.IsNullOrEmpty(GlobalParams.Tpv))
-                throw new ArgumentException("TERM enviroment variable must be defined");
+                throw new ArgumentException("TERM environment variable must be defined");
 
-            GlobalParams.DebugPathTmpDir = Path.Combine(GlobalParams.IberDir, "TMP", Logger.FILE_PATH);
-            GlobalParams.PosDirDbfFiles = Path.Combine(GlobalParams.IberDir, "DATA");
-            var sFullPath = Path.Combine(GlobalParams.IberDir, Constants.POS_BIN_FOLDER, Constants.INI_FILE);
+            GlobalParams.DebugPathTmpDir = Path.Combine(GlobalParams.LocalDir, "TMP", Logger.FILE_PATH);
+            GlobalParams.PosDirDbfFiles = Path.Combine(GlobalParams.LocalDir, "DATA");
+            var sFullPath = Path.Combine(GlobalParams.LocalDir, Constants.POS_BIN_FOLDER, Constants.INI_FILE);
 
             if (File.Exists(sFullPath) == false)
                 throw new ArgumentException($"'{sFullPath}' file must be defined");
@@ -246,7 +246,7 @@ namespace Tpv.Printer.Service.Sdk
 
         private static void ReadPosIniFile()
         {
-            var file = Path.Combine(GlobalParams.IberDir, Constants.POS_DATA_FOLDER, Constants.POS_INI_FILE);
+            var file = Path.Combine(GlobalParams.LocalDir, Constants.POS_DATA_FOLDER, Constants.POS_INI_FILE);
 
             if (!File.Exists(file))
             {

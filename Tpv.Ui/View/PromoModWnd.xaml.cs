@@ -1,7 +1,10 @@
-﻿using log4net;
+﻿using AlohaFOHLib.Intl;
+using log4net;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Web.Script.Serialization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -244,20 +247,20 @@ namespace Tpv.Ui.View
             {
                 LstModifierGroup = new List<ItemGroupModifier>();
 
-                LasaFOHLib67.IberDepot depot;
-                LasaFOHLib67.IIberObject parent;
+                IberDepot depot;
+                IIberObject parent;
 
                 try
                 {
                     try
                     {
-                        depot = new LasaFOHLib67.IberDepotClass();
-                        LasaFOHLib67.IIberObject localState = depot.GetEnum(720).First();
+                        depot = new IberDepotClass();
+                        IIberObject localState = depot.GetEnum(720).First();
 
                         try
                         {
                             // get the current employee
-                            LasaFOHLib67.IIberObject emp = localState.GetEnum(723).First();
+                            IIberObject emp = localState.GetEnum(723).First();
                             Console.WriteLine(@"Empleado: {0} {1}", emp.GetStringVal("FIRSTNAME"), emp.GetStringVal("LASTNAME"));
                         }
                         catch (Exception ex)
@@ -277,7 +280,7 @@ namespace Tpv.Ui.View
                         return;
                     }
 
-                    depot = new LasaFOHLib67.IberDepotClass();
+                    depot = new IberDepotClass();
                     parent = depot.FindObjectFromId(740, CodeGroupModifier).First();
                 }
                 catch (Exception ex)
@@ -301,23 +304,47 @@ namespace Tpv.Ui.View
 
                 try
                 {
-                    LasaFOHLib67.IIberEnum modgroups = depot.GetEnum(16);
-                    LasaFOHLib67.IIberObject modgroup = modgroups.First();
-                    while (modgroup != null)
+                    foreach (IberObject cat in depot.GetEnum(16))
                     {
-                        var mgid = modgroup.GetLongVal("ID");
-                        if (modgrpIds.Contains(mgid))
+                        try
                         {
-                            LstModifierGroup.Add(new ItemGroupModifier
+                            var mgid = cat.GetLongVal("ID");
+
+                            if (modgrpIds.Contains(mgid))
                             {
-                                Name = modgroup.GetStringVal("LONGNAME"),
-                                Minimum = modgroup.GetStringVal("MINIMUM"),
-                                Maximum = modgroup.GetStringVal("MAXIMUM"),
-                                Id = mgid
-                            });
+                                LstModifierGroup.Add(new ItemGroupModifier
+                                {
+                                    Name = cat.GetStringVal("LONGNAME"),
+                                    Minimum = cat.GetStringVal("MINIMUM"),
+                                    Maximum = cat.GetStringVal("MAXIMUM"),
+                                    Id = mgid
+                                });
+                            }
+
                         }
-                        modgroup = modgroups.Next();
+                        catch (Exception)
+                        {
+                            // expected
+                        }
                     }
+
+                    //IIberEnum modgroups = depot.GetEnum(16);
+                    //IIberObject modgroup = modgroups.First();
+                    //while (modgroup != null)
+                    //{
+                    //    var mgid = modgroup.GetLongVal("ID");
+                    //    if (modgrpIds.Contains(mgid))
+                    //    {
+                    //        LstModifierGroup.Add(new ItemGroupModifier
+                    //        {
+                    //            Name = modgroup.GetStringVal("LONGNAME"),
+                    //            Minimum = modgroup.GetStringVal("MINIMUM"),
+                    //            Maximum = modgroup.GetStringVal("MAXIMUM"),
+                    //            Id = mgid
+                    //        });
+                    //    }
+                    //    modgroup = modgroups.Next();
+                    //}
                 }
                 catch (Exception ex)
                 {
@@ -412,27 +439,47 @@ namespace Tpv.Ui.View
 
             try
             {
-                LasaFOHLib67.IberDepot depot = new LasaFOHLib67.IberDepotClass();
-                LasaFOHLib67.IIberObject modgroup = null;
+                IberDepot depot = new IberDepotClass();
+                IIberObject modGroup = null;
+                _log.Info($"groupModifier.Id: {groupModifier.Id}");
                 // get the groupModifier group
                 try
                 {
-                    LasaFOHLib67.IIberEnum modgroups = depot.GetEnum(16);
-                    modgroup = modgroups.First();
-                    while (modgroup != null)
+                    foreach (IberObject cat in depot.GetEnum(16))
                     {
-                        if (modgroup.GetLongVal("ID") == groupModifier.Id)
-                            break;
+                        try
+                        {
+                            var mdId = cat.GetLongVal("ID");
 
-                        modgroup = modgroups.Next();
+                            if (mdId == groupModifier.Id)
+                            {
+                                _log.Info("groupModifier.Id: FOUND!!");
+                                modGroup = cat;
+                                break;
+                            }
+
+                        }
+                        catch (Exception)
+                        {
+                            // expected
+                        }
                     }
+                    //IIberEnum modgroups = depot.GetEnum(16);
+                    //modgroup = modgroups.First();
+                    //while (modgroup != null)
+                    //{
+                    //    if (modgroup.GetLongVal("ID") == groupModifier.Id)
+                    //        break;
+
+                    //    modgroup = modgroups.Next();
+                    //}
                 }
                 catch (Exception)
                 {
                     // expected
                 }
 
-                if (modgroup == null)
+                if (modGroup == null)
                 {
                     // sanity check.
                     // we shouldn't have gotten here if the groupModifier group doesn't exist
@@ -443,18 +490,18 @@ namespace Tpv.Ui.View
                 // there can be up to 54 modifiers in a group
                 for (int x = 1; x <= 54; x++)
                 {
-                    int itemId = modgroup.GetLongVal(String.Format("ITEM{0:D2}", x));
+                    int itemId = modGroup.GetLongVal($"ITEM{x:D2}");
                     if (itemId > 0)
                     {
                         // find the item
                         try
                         {
-                            LasaFOHLib67.IIberObject item = depot.FindObjectFromId(740, itemId).First();
+                            IIberObject item = depot.FindObjectFromId(740, itemId).First();
                             listModifiers.Add(new ItemModifier
                             {
                                 Id = itemId,
                                 Name = item.GetStringVal("LONGNAME"),
-                                Price = item.GetDoubleVal("PRICE").ToString(),
+                                Price = item.GetDoubleVal("PRICE").ToString(CultureInfo.InvariantCulture),
                                 GroupModifier = groupModifier
                             });
                         }
@@ -466,6 +513,9 @@ namespace Tpv.Ui.View
                 }
 
                 listModifiers = listModifiers.OrderBy(e => e.Name).ToList();
+
+                _log.Info($"{new JavaScriptSerializer().Serialize(LstModifierGroup)}");
+
                 foreach (var modifier in listModifiers)
                 {
                     var button = FactoryButton.CreateModifierButton(modifier, OnClickModifier);

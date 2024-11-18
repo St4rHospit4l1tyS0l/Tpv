@@ -1,8 +1,8 @@
-﻿using LasaFOHLib;
+﻿using AlohaFOHLib.Intl;
 using System;
 using System.Runtime.InteropServices;
 
-namespace LoyaltyIntegrationLib.Service.Sdk
+namespace Tpv.Printer.Service.Sdk
 {
     public class SdkFactory
     {

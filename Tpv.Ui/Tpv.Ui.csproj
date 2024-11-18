@@ -122,8 +122,8 @@
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LasaFOHLib67">
-      <HintPath>..\lib\LasaFOHLib67.dll</HintPath>
+    <Reference Include="AlohaFOHLib.Intl">
+      <HintPath>..\lib\AlohaFOHLib.Intl.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">

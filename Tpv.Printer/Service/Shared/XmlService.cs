@@ -111,7 +111,7 @@ namespace Tpv.Printer.Service.Shared
 
         private static string SaveBmpFile(Bitmap qrCodeImage, int checkId)
         {
-            var pathBmp = Path.Combine(GlobalParams.IberDir, "BMP");
+            var pathBmp = Path.Combine(GlobalParams.LocalDir, "BMP");
 
             if (!Directory.Exists(pathBmp))
                 Directory.CreateDirectory(pathBmp);
